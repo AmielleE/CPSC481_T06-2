@@ -1,5 +1,8 @@
 import { Link, Route, Routes } from 'react-router'
-import './App.css'
+import { LibraryProvider } from './data/library'
+import CollectionPreviewPage from './pages/CollectionPreviewPage'
+import ImagePreviewPage from './pages/ImagePreviewPage'
+import UploadImagesPage from './pages/UploadImagesPage'
 
 function Home() {
   return (
@@ -30,21 +33,18 @@ function NotFound() {
 
 export default function App() {
   return (
-    <>
-      <header className="site-header">
-        <Link className="site-title" to="/">CPSC481_T06-2</Link>
-        <nav aria-label="Main navigation">
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-    </>
+    <LibraryProvider>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/collections/:collectionId/upload" element={<UploadImagesPage />} />
+        <Route path="/collections/:collectionId/preview" element={<CollectionPreviewPage />} />
+        <Route
+          path="/collections/:collectionId/preview/images/:imageId"
+          element={<ImagePreviewPage />}
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </LibraryProvider>
   )
 }
