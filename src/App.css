@@ -12,28 +12,153 @@
   text-decoration: none;
 }
 
-nav {
+/* Header navigation */
+.site-header nav {
   display: flex;
   gap: 1rem;
 }
 
-nav a {
+.site-header nav a {
   text-decoration: none;
 }
 
-nav a:hover,
-nav a:focus-visible,
-main a:hover,
-main a:focus-visible {
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
 
-main {
-  width: min(64rem, calc(100% - 2.5rem));
-  margin: 3rem auto;
-}
-
+/* General headings */
 h1 {
   margin-top: 0;
+}
+
+/* Global page sizing */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  min-width: 320px;
+  background-color: white;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Shared layout used by Login and Collections */
+.app-shell {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+}
+
+/* Main content beside sidebar */
+.app-shell > .main {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Shared sidebar */
+.app-shell > .sidebar {
+  width: 120px;
+  min-height: 100vh;
+  flex-shrink: 0;
+
+  background-color: #669bbc;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 65px;
+}
+
+/* Sidebar navigation links */
+.app-shell .sidebar-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 55px;
+  height: 55px;
+
+  color: #222;
+  text-decoration: none;
+  border-radius: 10px;
+
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.app-shell .sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.app-shell .sidebar-link.active,
+.app-shell .sidebar-link[aria-current="page"] {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+/* Hide sidebar labels to match Figma */
+.app-shell .sidebar-link span {
+  display: none;
+}
+
+/* Home page layout */
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Prevent old global main styling from affecting Home */
+.home-page > .home-content {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  margin: 0;
+}
+
+/* Collections page */
+.collections-page {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Login page */
+.login-page {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+  .app-shell > .sidebar {
+    width: 70px;
+    gap: 40px;
+  }
+
+  .app-shell .sidebar-link {
+    width: 45px;
+    height: 45px;
+  }
+
+  .app-shell .sidebar-link svg {
+    width: 26px;
+    height: 26px;
+  }
 }
