@@ -28,6 +28,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 .page-title { font-size: 1.75rem; font-weight: 600; }
 .muted { color: var(--muted); }
 .small { font-size: 0.8rem; }
+.multiline { white-space: pre-line; } /* keep line breaks typed into text fields */
 .notice { margin-top: 0.4rem; font-size: 0.85rem; color: var(--muted); font-style: italic; }
 
 /* Buttons */
@@ -48,6 +49,7 @@ ul { list-style: none; margin: 0; padding: 0; }
 /* Image viewer */
 .viewer { display: flex; align-items: center; justify-content: center; gap: 1.5rem; }
 .viewer-image { display: flex; align-items: center; justify-content: center; width: min(100%, 640px); aspect-ratio: 4 / 3; overflow: hidden; border-radius: 4px; background: var(--tile); }
+.viewer-image.bare { background: none; } /* edit page: image sits on the page background */
 .viewer-image img { width: 100%; height: 100%; object-fit: contain; }
 .arrow { border: 0; background: none; font-size: 1.5rem; color: var(--sidebar); cursor: pointer; }
 .arrow:disabled { color: var(--border); cursor: not-allowed; }
@@ -63,7 +65,77 @@ ul { list-style: none; margin: 0; padding: 0; }
 .file-list { width: 100%; text-align: left; }
 .file-list li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 
+/* Collection editor */
+.collection-meta { display: flex; flex: 1 1 auto; flex-direction: column; gap: 0.25rem; min-width: 0; }
+/* Fixed-width box: text (or its edit field) on the left, edit button pinned to the top-right corner */
+.editable { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 0.4rem; width: min(100%, 40rem); }
+/* Display text and edit field share padding, border width and line height so switching doesn't shift layout */
+/* Minimal editing: no box, just an underline (which also serves as the focus indicator) */
+.editable-text, .editable-field { margin: 0; padding: 0.2rem 0; border: 0; border-bottom: 1px solid transparent; border-radius: 0; background: transparent; font: inherit; line-height: 1.4; overflow-wrap: anywhere; }
+.editable-text { cursor: text; }
+.editable-text:hover { border-bottom-color: var(--border); }
+.editable-field { width: 100%; border-bottom-color: var(--sidebar); box-shadow: 0 1px 0 var(--sidebar); color: var(--text); resize: none; field-sizing: content; }
+.editable-field:focus-visible { outline: none; }
+.title-text { font-size: 1.75rem; font-weight: 600; line-height: 1.25; }
+.subtitle-text { font-size: 1.15rem; font-weight: 600; }
+.icon-button { display: inline-flex; padding: 0.25rem; border: 0; border-radius: 4px; background: none; color: var(--sidebar); cursor: pointer; }
+.icon-button:hover { background: #eef5fa; }
+.text-input { width: 100%; padding: 0.4rem 0.6rem; border: 1px solid var(--border); border-radius: 4px; font: inherit; color: var(--text); }
+.collection-actions { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; }
+.action-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.75rem; }
+.save-status { font-size: 0.85rem; color: var(--muted); }
+.toggle { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; }
+.toggle input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.toggle-track { position: relative; width: 2.6rem; height: 1.4rem; border-radius: 999px; background: var(--border); transition: background 0.15s; }
+.toggle-track::after { content: ''; position: absolute; top: 0.2rem; left: 0.2rem; width: 1rem; height: 1rem; border-radius: 50%; background: #fff; transition: transform 0.15s; }
+.toggle input:checked + .toggle-track { background: var(--sidebar); }
+.toggle input:checked + .toggle-track::after { transform: translateX(1.2rem); }
+.toggle input:focus-visible + .toggle-track { outline: 3px solid #1f6feb; outline-offset: 2px; }
+.drag-hint { margin-bottom: 1.25rem; text-align: center; font-size: 0.85rem; }
+/* Square boxes (same size as the + tile); images fit inside at their original aspect ratio */
+.thumb { display: flex; align-items: center; justify-content: center; aspect-ratio: 1; }
+.thumb-frame { position: relative; max-width: 100%; max-height: 100%; }
+.thumb-link { display: block; width: 100%; height: 100%; border-radius: 4px; overflow: hidden; background: var(--tile); }
+.thumb-link:hover { outline: 2px solid var(--sidebar); }
+.thumb-link img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.tile-wrap { position: relative; cursor: grab; }
+.tile-wrap.dragging { opacity: 0.4; }
+.drop-target .thumb-frame, .drop-target .add-tile { outline: 3px solid var(--sidebar); outline-offset: 3px; border-radius: 4px; }
+.remove-badge { position: absolute; top: -0.6rem; right: -0.6rem; width: 1.6rem; height: 1.6rem; padding: 0; border: 1px solid var(--border); border-radius: 50%; background: #fff; color: var(--text); font-size: 1rem; line-height: 1; cursor: pointer; }
+.remove-badge:hover { border-color: var(--error); color: var(--error); }
+.add-tile { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 2px dashed var(--border); background: #fafafa; color: var(--sidebar); font-size: 2.5rem; text-decoration: none; }
+.btn-danger { background: var(--error); color: #fff; }
+.btn-danger:hover { background: #8f1e18; }
+.field { display: flex; flex-direction: column; gap: 0.35rem; }
+
+/* Image editor */
+.title-link { color: inherit; text-decoration: none; }
+.title-link:hover { text-decoration: underline; }
+.image-details { display: flex; flex: 1 1 auto; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.sale-controls { display: flex; flex-shrink: 0; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+.checkbox { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.95rem; cursor: pointer; }
+.checkbox input { width: 1.1rem; height: 1.1rem; margin: 0; accent-color: var(--sidebar); }
+.price-input { display: flex; align-items: center; gap: 0.3rem; width: 9rem; padding: 0.4rem 0.6rem; border: 1px solid var(--border); border-radius: 4px; }
+.price-input:focus-within { border-color: var(--sidebar); box-shadow: 0 0 0 1px var(--sidebar); }
+.price-input.invalid { border-color: var(--error); box-shadow: 0 0 0 1px var(--error); }
+.price-input:has(input:disabled) { opacity: 0.5; }
+.price-input input { width: 100%; padding: 0; border: 0; background: transparent; font: inherit; color: var(--text); }
+.price-input input:focus-visible { outline: none; } /* the box's border shows focus instead */
+.field-hint, .field-error { max-width: 14rem; min-height: 1.2em; font-size: 0.8rem; text-align: right; }
+.field-hint { color: var(--muted); }
+.field-error { color: var(--error); }
+
+/* Dialog */
+.dialog { width: min(90vw, 28rem); padding: 1.5rem; border: 0; border-radius: 6px; box-shadow: 0 10px 30px rgb(0 0 0 / 0.2); color: var(--text); }
+.dialog::backdrop { background: rgb(0 0 0 / 0.35); }
+.dialog-title { margin-bottom: 0.75rem; font-size: 1.15rem; font-weight: 600; }
+.dialog-body { display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.95rem; }
+.dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem; }
+
 @media (max-width: 800px) {
   .image-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .page { padding: 1.25rem; }
+  .page-header { flex-wrap: wrap; }
+  .collection-actions { align-items: flex-start; }
+  .action-row { justify-content: flex-start; }
 }

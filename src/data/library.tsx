@@ -5,6 +5,8 @@ export type LibraryImage = {
   title: string
   description: string
   src: string | null // null = grey placeholder tile
+  thumbSrc: string | null // small copy used in grids; full-size images are slow to repaint
+  aspectRatio: number // width / height
   forSale: boolean
   price: number | null
 }
@@ -17,15 +19,25 @@ export type Collection = {
   images: LibraryImage[]
 }
 
-function makePlaceholders(collectionId: string, count: number): LibraryImage[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: `${collectionId}-img-${i + 1}`,
-    title: `Image title ${i + 1}`,
-    description: 'Image description goes here.',
-    src: null,
-    forSale: i % 3 === 0,
-    price: i % 3 === 0 ? 25 + i * 5 : null,
-  }))
+const THUMB_SIZE = 480 // px on the longest side; sharp enough for grid tiles on high-DPI screens
+// When you add large images to the library it slows down the UI quite a lot so we are making thumbnails for images.
+async function makeThumbnail(file: File) {
+  const fullSrc = URL.createObjectURL(file)
+  try {
+    const bitmap = await createImageBitmap(file)
+    const { width, height } = bitmap
+    const scale = Math.min(1, THUMB_SIZE / Math.max(width, height))
+    const canvas = document.createElement('canvas')
+    canvas.width = Math.round(width * scale)
+    canvas.height = Math.round(height * scale)
+    canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+    bitmap.close()
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.85))
+    return { src: fullSrc, thumbSrc: blob ? URL.createObjectURL(blob) : fullSrc, aspectRatio: width / height }
+  } catch {
+    // Formats the browser can't decode here (e.g. some RAW/HEIC files) fall back to the original
+    return { src: fullSrc, thumbSrc: fullSrc, aspectRatio: 1 }
+  }
 }
 
 const initialCollections: Collection[] = [
@@ -34,21 +46,24 @@ const initialCollections: Collection[] = [
     name: 'Collection 1',
     info: 'General info about this collection.',
     isPrivate: false,
-    images: makePlaceholders('collection-1', 12),
+    images: [],
   },
   {
     id: 'collection-2',
     name: 'Collection 2',
     info: 'General info about this collection.',
     isPrivate: true,
-    images: makePlaceholders('collection-2', 8),
+    images: [],
   },
 ]
 
 type LibraryContextValue = {
   collections: Collection[]
   getCollection: (id: string) => Collection | undefined
-  addImages: (collectionId: string, files: File[]) => void
+  addImages: (collectionId: string, files: File[]) => Promise<void>
+  updateCollection: (collectionId: string, changes: Partial<Omit<Collection, 'id'>>) => void
+  deleteCollection: (collectionId: string) => void
+  updateImage: (collectionId: string, imageId: string, changes: Partial<Omit<LibraryImage, 'id'>>) => void
 }
 
 const LibraryContext = createContext<LibraryContextValue | null>(null)
@@ -58,32 +73,45 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
 
   const getCollection = (id: string) => collections.find((c) => c.id === id)
 
-  const addImages = (collectionId: string, files: File[]) => {
+  // Thumbnails are generated in the background; the images appear once they're ready
+  const addImages = async (collectionId: string, files: File[]) => {
     const stamp = Date.now()
+    const thumbnails = await Promise.all(files.map(makeThumbnail))
+    const newImages: LibraryImage[] = files.map((file, i) => ({
+      id: `${collectionId}-${stamp}-${i}`,
+      title: file.name.replace(/\.[^.]+$/, ''),
+      description: '',
+      ...thumbnails[i],
+      forSale: false,
+      price: null,
+    }))
+    setCollections((prev) =>
+      prev.map((c) => (c.id === collectionId ? { ...c, images: [...c.images, ...newImages] } : c)),
+    )
+  }
+
+  const updateCollection = (collectionId: string, changes: Partial<Omit<Collection, 'id'>>) => {
+    setCollections((prev) => prev.map((c) => (c.id === collectionId ? { ...c, ...changes } : c)))
+  }
+
+  const deleteCollection = (collectionId: string) => {
+    setCollections((prev) => prev.filter((c) => c.id !== collectionId))
+  }
+
+  const updateImage = (collectionId: string, imageId: string, changes: Partial<Omit<LibraryImage, 'id'>>) => {
     setCollections((prev) =>
       prev.map((c) =>
         c.id !== collectionId
           ? c
-          : {
-              ...c,
-              images: [
-                ...c.images,
-                ...files.map((file, i) => ({
-                  id: `${collectionId}-${stamp}-${i}`,
-                  title: file.name.replace(/\.[^.]+$/, ''),
-                  description: '',
-                  src: URL.createObjectURL(file),
-                  forSale: false,
-                  price: null,
-                })),
-              ],
-            },
+          : { ...c, images: c.images.map((img) => (img.id === imageId ? { ...img, ...changes } : img)) },
       ),
     )
   }
 
   return (
-    <LibraryContext.Provider value={{ collections, getCollection, addImages }}>
+    <LibraryContext.Provider
+      value={{ collections, getCollection, addImages, updateCollection, deleteCollection, updateImage }}
+    >
       {children}
     </LibraryContext.Provider>
   )

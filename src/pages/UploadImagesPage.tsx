@@ -21,6 +21,7 @@ export default function UploadImagesPage() {
   const [files, setFiles] = useState<File[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const [dragging, setDragging] = useState(false)
+  const [processing, setProcessing] = useState(false)
 
   const collection = getCollection(collectionId)
   // Cancelling while creating a new collection goes back to all collections
@@ -51,8 +52,9 @@ export default function UploadImagesPage() {
     handleFiles(e.dataTransfer.files)
   }
 
-  function onFinish() {
-    addImages(collectionId, files)
+  async function onFinish() {
+    setProcessing(true)
+    await addImages(collectionId, files) // waits for thumbnails so images are there on return
     navigate(`/collections/${collectionId}`)
   }
 
@@ -122,8 +124,13 @@ export default function UploadImagesPage() {
             </ul>
           )}
 
-          <button type="button" className="btn btn-primary" disabled={files.length === 0} onClick={onFinish}>
-            Finish
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={files.length === 0 || processing}
+            onClick={onFinish}
+          >
+            {processing ? 'Preparing images…' : 'Finish'}
           </button>
         </div>
       </div>

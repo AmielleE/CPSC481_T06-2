@@ -5,7 +5,9 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Collections from './pages/Collections'
 
+import CollectionPage from './pages/CollectionPage'
 import CollectionPreviewPage from './pages/CollectionPreviewPage'
+import ImageEditPage from './pages/ImageEditPage'
 import ImagePreviewPage from './pages/ImagePreviewPage'
 import UploadImagesPage from './pages/UploadImagesPage'
 
@@ -39,6 +41,16 @@ export default function App() {
         <Route path="/collections" element={<Collections />} />
 
         {/* Existing collection routes */}
+        <Route
+          path="/collections/:collectionId"
+          element={<CollectionPage />}
+        />
+
+        <Route
+          path="/collections/:collectionId/images/:imageId"
+          element={<ImageEditPage />}
+        />
+
         <Route
           path="/collections/:collectionId/upload"
           element={<UploadImagesPage />}
