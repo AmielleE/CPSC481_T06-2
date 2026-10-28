@@ -1,5 +1,6 @@
 import { Link, useParams } from 'react-router'
 import Layout from '../components/Layout'
+import Thumbnail from '../components/Thumbnail'
 import { useLibrary } from '../data/library'
 
 export default function CollectionPreviewPage() {
@@ -37,13 +38,11 @@ export default function CollectionPreviewPage() {
         <ul className="image-grid">
           {collection.images.map((image) => (
             <li key={image.id}>
-              <Link
+              <Thumbnail
+                image={image}
                 to={`/collections/${collection.id}/preview/images/${image.id}`}
-                className="tile"
-                aria-label={image.title}
-              >
-                {image.src && <img src={image.src} alt={image.title} />}
-              </Link>
+                label={image.title}
+              />
             </li>
           ))}
         </ul>

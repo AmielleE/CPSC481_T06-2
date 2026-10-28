@@ -19,7 +19,11 @@ export default function Thumbnail({ image, to, label, children }: ThumbnailProps
     <div className="thumb">
       <div className="thumb-frame" style={frameStyle}>
         <Link to={to} className="thumb-link" draggable={false} aria-label={label}>
-          {image.thumbSrc && <img src={image.thumbSrc} alt="" draggable={false} decoding="async" />}
+          {image.thumbSrc ? (
+            <img src={image.thumbSrc} alt="" draggable={false} decoding="async" />
+          ) : (
+            <span className="thumb-placeholder">{image.title}</span> // blank prototype image
+          )}
         </Link>
         {children}
       </div>

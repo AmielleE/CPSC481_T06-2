@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditableText from '../components/EditableText'
 import Layout from '../components/Layout'
+import ViewerImage from '../components/ViewerImage'
 import { useLibrary, type Collection, type LibraryImage } from '../data/library'
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges'
 
@@ -77,12 +78,13 @@ function ImageEditor({ collection, image }: { collection: Collection; image: Lib
           <span className="save-status" role="status">
             {status}
           </span>
-          <Link to={`/collections/${collection.id}/preview/images/${image.id}`} className="btn btn-secondary">
-            Preview
-          </Link>
           <button type="button" className="btn" disabled={!dirty || !canSave} onClick={saveChanges}>
             Save changes
           </button>
+          {/* Preview sits top-right, where "Exit preview" is, matching the collection page */}
+          <Link to={`/collections/${collection.id}/preview/images/${image.id}`} className="btn btn-secondary">
+            Preview
+          </Link>
         </div>
       </header>
 
@@ -96,9 +98,7 @@ function ImageEditor({ collection, image }: { collection: Collection; image: Lib
         >
           ◀
         </button>
-        <div className="viewer-image bare">
-          {image.src ? <img src={image.src} alt={draft.title} /> : <span className="muted">Image</span>}
-        </div>
+        <ViewerImage image={image} title={draft.title} />
         <button
           type="button"
           className="arrow"

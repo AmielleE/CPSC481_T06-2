@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import Layout from '../components/Layout'
+import ViewerImage from '../components/ViewerImage'
 import { useLibrary } from '../data/library'
 
 const imagePath = (collectionId: string, imageId: string) =>
@@ -59,9 +60,7 @@ export default function ImagePreviewPage() {
           >
             ◀
           </button>
-          <div className="viewer-image">
-            {image.src ? <img src={image.src} alt={image.title} /> : <span className="muted">Image</span>}
-          </div>
+          <ViewerImage image={image} title={image.title} />
           <button
             type="button"
             className="arrow"
