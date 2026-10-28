@@ -109,9 +109,10 @@ function CollectionEditor({ collection }: { collection: Collection }) {
             <button type="button" className="btn" disabled={!dirty} onClick={saveChanges}>
               Save changes
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => setConfirmingDelete(true)}>
-              Delete collection
-            </button>
+            {/* Preview sits top-right, where "Exit preview" is, so returning doesn't land on Delete */}
+            <Link to={`/collections/${collection.id}/preview`} className="btn btn-secondary">
+              Preview
+            </Link>
           </div>
           <div className="action-row">
             <label className="toggle">
@@ -124,9 +125,9 @@ function CollectionEditor({ collection }: { collection: Collection }) {
               />
               <span className="toggle-track" aria-hidden="true" />
             </label>
-            <Link to={`/collections/${collection.id}/preview`} className="btn btn-secondary">
-              Preview
-            </Link>
+            <button type="button" className="btn btn-secondary btn-delete" onClick={() => setConfirmingDelete(true)}>
+              Delete collection
+            </button>
           </div>
         </div>
       </header>

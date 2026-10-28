@@ -40,20 +40,59 @@ async function makeThumbnail(file: File) {
   }
 }
 
+// Blank stand-ins for photos so the prototype can be walked through on GitHub Pages without real images.
+// Shapes vary (landscape, portrait, square) so the original-aspect-ratio thumbnails are visible.
+const PLACEHOLDER_RATIOS = [3 / 2, 2 / 3, 1, 4 / 3, 3 / 4, 16 / 9]
+
+function makePlaceholders(collectionId: string, count: number): LibraryImage[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `${collectionId}-img-${i + 1}`,
+    title: `Image ${i + 1}`,
+    description: i % 2 === 0 ? 'A short description of this photo.' : '',
+    src: null,
+    thumbSrc: null,
+    aspectRatio: PLACEHOLDER_RATIOS[i % PLACEHOLDER_RATIOS.length],
+    forSale: i % 4 === 0,
+    price: i % 4 === 0 ? 25 + i * 5 : null,
+  }))
+}
+
+// IDs and names match the "All Collections" page (src/pages/Collections.tsx) so its cards open these
 const initialCollections: Collection[] = [
   {
-    id: 'collection-1',
+    id: '1',
     name: 'Collection 1',
+    info: 'General info about this collection.\nUse this space for context about the shoot or project.',
+    isPrivate: false,
+    images: makePlaceholders('1', 12),
+  },
+  {
+    id: '2',
+    name: 'Collection 2',
     info: 'General info about this collection.',
+    isPrivate: false,
+    images: makePlaceholders('2', 8),
+  },
+  {
+    id: '3',
+    name: 'Collection 3',
+    info: 'General info about this collection.',
+    isPrivate: false,
+    images: makePlaceholders('3', 6),
+  },
+  {
+    id: '4',
+    name: 'Collection 4',
+    info: '', // empty collection: shows the "add images" state
     isPrivate: false,
     images: [],
   },
   {
-    id: 'collection-2',
-    name: 'Collection 2',
+    id: '5',
+    name: 'Collection 5',
     info: 'General info about this collection.',
     isPrivate: true,
-    images: [],
+    images: makePlaceholders('5', 5),
   },
 ]
 
