@@ -13,39 +13,68 @@ export default function Login() {
     event.preventDefault()
 
     // Temporary login functionality
-    // Redirect to Home page without checking credentials
+    // Redirect to Home without checking credentials
     navigate('/')
   }
 
   return (
     <div className="login-page">
+
       <div className="login-container">
 
-        <h1>Hi John Doe!</h1>
+        {/* Photographer branding */}
+        <div className="login-brand">
+          <h1>John Doe</h1>
+          <p>PHOTOGRAPHY</p>
+        </div>
 
-        <form onSubmit={handleLogin} className="login-form">
-          <input
-            type="email"
-            placeholder="email"
-            aria-label="Email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
+        {/* Divider */}
+        <div className="login-divider"></div>
 
-          <input
-            type="password"
-            placeholder="password"
-            aria-label="Password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
+        {/* Login section */}
+        <div className="login-section">
 
-          <button type="submit" className="login-button">
-            Login
-          </button>
-        </form>
+          <h2>WELCOME BACK</h2>
+
+          <form onSubmit={handleLogin} className="login-form">
+
+            {/* Email */}
+            <div className="login-field">
+              <label htmlFor="login-email">EMAIL</label>
+
+              <input
+                id="login-email"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </div>
+
+            {/* Password */}
+            <div className="login-field">
+              <label htmlFor="login-password">PASSWORD</label>
+
+              <input
+                id="login-password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </div>
+
+            {/* Login button */}
+            <button type="submit" className="login-button">
+              LOGIN
+            </button>
+
+          </form>
+
+        </div>
 
       </div>
+
     </div>
   )
 }
