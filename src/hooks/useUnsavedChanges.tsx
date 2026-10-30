@@ -1,88 +1,193 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import Dialog from '../components/Dialog'
+import './useUnsavedChanges.css'
 
-// Shared save flow for edit pages:
-// - saveChanges() saves and briefly reports "Changes saved"
-// - while there are unsaved changes, in-app link clicks (including the sidebar), requestNavigate()
-//   and browser reloads ask the user to save, discard or stay
-export function useUnsavedChanges(dirty: boolean, save: () => void, subject: string, canSave = true) {
+type UnsavedChangesResult = {
+  saveChanges: () => void
+  status: string
+  requestNavigate: (path: string) => void
+  dialog: React.ReactNode
+}
+
+export function useUnsavedChanges(
+  dirty: boolean,
+  save: () => void,
+  subject: string,
+  canSave = true
+): UnsavedChangesResult {
   const navigate = useNavigate()
+
   const [pendingPath, setPendingPath] = useState<string | null>(null)
   const [justSaved, setJustSaved] = useState(false)
+
+  // ========================================
+  // PROTECT UNSAVED CHANGES
+  // ========================================
 
   useEffect(() => {
     if (!dirty) return
 
-    function onClick(e: MouseEvent) {
-      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-      const link = (e.target as Element).closest?.('a[href^="#/"]')
+    function handleLinkClick(event: MouseEvent) {
+      if (
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return
+      }
+
+      if (!(event.target instanceof Element)) return
+
+      const link = event.target.closest('a[href^="#/"]')
+
       if (!link) return
-      e.preventDefault()
-      e.stopPropagation() // runs in the capture phase, so React Router never sees the click
-      setPendingPath(link.getAttribute('href')!.slice(1))
-    }
-    function onBeforeUnload(e: BeforeUnloadEvent) {
-      e.preventDefault()
+
+      const href = link.getAttribute('href')
+
+      if (!href) return
+
+      event.preventDefault()
+      event.stopPropagation()
+
+      setPendingPath(href.slice(1))
     }
 
-    document.addEventListener('click', onClick, true)
-    window.addEventListener('beforeunload', onBeforeUnload)
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
+      event.preventDefault()
+      event.returnValue = ''
+    }
+
+    document.addEventListener('click', handleLinkClick, true)
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
     return () => {
-      document.removeEventListener('click', onClick, true)
-      window.removeEventListener('beforeunload', onBeforeUnload)
+      document.removeEventListener('click', handleLinkClick, true)
+      window.removeEventListener('beforeunload', handleBeforeUnload)
     }
   }, [dirty])
 
+  // ========================================
+  // SAVE CONFIRMATION
+  // ========================================
+
   useEffect(() => {
     if (!justSaved) return
-    const timer = setTimeout(() => setJustSaved(false), 2500)
-    return () => clearTimeout(timer)
+
+    const timer = window.setTimeout(() => {
+      setJustSaved(false)
+    }, 2500)
+
+    return () => window.clearTimeout(timer)
   }, [justSaved])
 
   function saveChanges() {
+    if (!canSave) return
+
     save()
     setJustSaved(true)
   }
 
-  // For navigation that isn't a link click, e.g. arrow buttons and keyboard shortcuts
+  // ========================================
+  // NAVIGATION
+  // ========================================
+
   function requestNavigate(path: string) {
-    if (dirty) setPendingPath(path)
-    else navigate(path)
+    if (dirty) {
+      setPendingPath(path)
+    } else {
+      navigate(path)
+    }
   }
 
-  function leave(saveFirst: boolean) {
-    if (!pendingPath) return
-    if (saveFirst) save()
+  function closeDialog() {
     setPendingPath(null)
-    navigate(pendingPath)
   }
 
-  const status = dirty ? 'Unsaved changes' : justSaved ? 'Changes saved' : ''
+  function leavePage(saveFirst: boolean) {
+    if (!pendingPath) return
+
+    if (saveFirst) {
+      if (!canSave) return
+      save()
+    }
+
+    const destination = pendingPath
+
+    setPendingPath(null)
+    navigate(destination)
+  }
+
+  // ========================================
+  // STATUS
+  // ========================================
+
+  const status = dirty
+    ? 'Unsaved changes'
+    : justSaved
+      ? 'Changes saved'
+      : ''
+
+  // ========================================
+  // CONFIRMATION DIALOG
+  // ========================================
 
   const dialog = (
     <Dialog
       open={pendingPath !== null}
-      title="Save changes before leaving?"
-      onClose={() => setPendingPath(null)}
+      title="Unsaved Changes"
+      onClose={closeDialog}
       actions={
-        <>
-          <button type="button" className="btn btn-secondary" onClick={() => setPendingPath(null)}>
-            Stay on page
+        <div className="unsaved-dialog-actions">
+          <button
+            type="button"
+            className="unsaved-dialog-stay"
+            onClick={closeDialog}
+          >
+            STAY ON PAGE
           </button>
-          <button type="button" className="btn btn-secondary" onClick={() => leave(false)}>
-            Discard changes
+
+          <button
+            type="button"
+            className="unsaved-dialog-discard"
+            onClick={() => leavePage(false)}
+          >
+            DISCARD CHANGES
           </button>
-          <button type="button" className="btn" disabled={!canSave} onClick={() => leave(true)}>
-            Save and continue
+
+          <button
+            type="button"
+            className="unsaved-dialog-save"
+            disabled={!canSave}
+            onClick={() => leavePage(true)}
+          >
+            SAVE & CONTINUE
           </button>
-        </>
+        </div>
       }
     >
-      <p>You have unsaved changes to this {subject}.</p>
-      {!canSave && <p className="field-error">Some changes can’t be saved yet. Stay to fix them, or discard them.</p>}
+      <div className="unsaved-dialog-content">
+        <p>
+          You have unsaved changes to this {subject}.
+          Would you like to save them before leaving?
+        </p>
+
+        {!canSave && (
+          <p className="unsaved-dialog-error">
+            Some changes cannot be saved yet.
+            Please correct them or discard your changes.
+          </p>
+        )}
+      </div>
     </Dialog>
   )
 
-  return { saveChanges, status, requestNavigate, dialog }
+  return {
+    saveChanges,
+    status,
+    requestNavigate,
+    dialog,
+  }
 }

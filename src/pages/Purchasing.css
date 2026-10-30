@@ -1,301 +1,168 @@
-.purchasing-page,
-.purchase-history-page {
-  width: 100%;
-  min-height: 100vh;
-  padding: 44px 48px;
-  color: #171717;
-  background: #fff;
+/* Available for purchase: reuses the collection grid; the title and price sit under each image */
+.sale-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.purchasing-header,
-.purchase-history-header {
+.sale-caption {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 30px;
+  gap: 0.5rem;
 }
 
-.purchasing-header h1,
-.purchase-history-header h1 {
-  margin: 0;
-  font-size: 32px;
-  font-weight: 400;
-}
-
-.purchasing-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-.purchasing-button {
-  display: inline-flex;
-  min-height: 38px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 7px 12px;
-  border: 1px solid #222;
-  border-radius: 0;
-  color: #171717;
-  background: #fff;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.purchasing-button:hover:not(:disabled) {
-  background: #f2f2f2;
-}
-
-.purchasing-button:focus-visible,
-.purchasing-price input:focus-visible,
-.purchase-date-filter:focus-visible {
-  outline: 2px solid #315f75;
-  outline-offset: 2px;
-}
-
-.purchasing-button:disabled {
-  color: #777;
-  border-color: #aaa;
-  cursor: not-allowed;
-}
-
-.purchasing-save-message {
-  font-size: 14px;
-}
-
-.purchasing-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.purchasing-item {
+/* Long names shrink and truncate so the price always fits on the same line */
+.sale-title {
+  flex: 1 1 auto;
   min-width: 0;
-}
-
-.purchasing-image-frame {
-  position: relative;
-  display: grid;
-  min-height: 120px;
-  place-items: center;
   overflow: hidden;
-  border: 1px solid #333;
-  background: #f5f5f5;
-}
-
-.purchasing-image-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.purchasing-placeholder {
-  color: #555;
-  font-size: 14px;
-}
-
-.purchasing-price {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  min-height: 26px;
-  padding: 2px 6px;
-  border: 1px solid #333;
-  background: #fff;
-  font-size: 14px;
-}
-
-.purchasing-price input {
-  width: 54px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  color: inherit;
-  background: transparent;
-  font: inherit;
-  text-align: right;
-}
-
-.purchasing-item-title {
-  overflow: hidden;
-  margin: 9px 0 0;
-  font-size: 15px;
+  font-size: 0.9rem;
   font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.purchasing-price-error {
-  margin: 5px 0 0;
-  color: #a32121;
-  font-size: 12px;
-}
-
-.purchasing-empty {
-  display: grid;
-  min-height: 220px;
-  place-items: center;
-  border: 1px solid #aaa;
-  color: #555;
-  text-align: center;
-}
-
-.purchase-history-heading {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.purchase-history-back {
-  display: grid;
-  width: 38px;
-  height: 38px;
+/* Read-only price on the customer preview, in the spot the price box takes on the edit page */
+.sale-price {
   flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid #222;
-  border-radius: 50%;
-  color: inherit;
+  font-size: 0.9rem;
 }
 
-.purchase-history-back:hover {
-  background: #f2f2f2;
+.sale-caption .price-input {
+  flex: 0 0 auto;
+  width: 5.5rem;
+  padding: 0.25rem 0.45rem;
+  font-size: 0.9rem;
 }
 
-.purchase-history-summary {
+.sale-item .field-error {
+  max-width: none;
+  text-align: right;
+}
+
+/* Two sections: images for sale first, then the rest grouped under their collection names */
+.purchase-section + .purchase-section {
+  margin-top: 2.5rem;
+}
+
+.section-heading {
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.purchase-group + .purchase-group {
+  margin-top: 1.75rem;
+}
+
+.group-heading {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* One row per collection that scrolls sideways, so long collections don't stretch the page.
+   Each image keeps the grid's row height and takes its width from its aspect ratio (--ar) */
+.scroll-row {
+  --row-height: 200px;
+
   display: flex;
-  align-items: stretch;
-  gap: 12px;
-}
-
-.purchase-history-stat,
-.purchase-date-filter {
-  display: flex;
-  min-height: 42px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 6px 12px;
-  border: 1px solid #555;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-.purchase-history-stat strong {
-  font-weight: 500;
-}
-
-.purchase-date-filter input {
-  max-width: 150px;
-  border: 0;
-  color: inherit;
-  background: transparent;
-  font: inherit;
-}
-
-.purchase-history-table-wrap {
-  width: 100%;
+  gap: 1.25rem;
   overflow-x: auto;
+  /* Room for the hover outline and the scrollbar */
+  padding: 3px 3px 0.75rem;
 }
 
-.purchase-history-table {
-  width: 100%;
-  min-width: 620px;
-  border-collapse: collapse;
-  table-layout: fixed;
+/* Thin scrollbar that only shows while the collection is hovered or has keyboard focus.
+   The bar keeps its space when hidden so the row doesn't jump */
+.scroll-row {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
-.purchase-history-table th,
-.purchase-history-table td {
-  height: 40px;
-  padding: 8px 12px;
-  border: 1px solid #555;
-  text-align: left;
+.purchase-group:hover .scroll-row,
+.purchase-group:focus-within .scroll-row {
+  scrollbar-color: var(--border) transparent;
 }
 
-.purchase-history-table th {
-  height: 48px;
-  font-weight: 500;
+/* Safari ignores scrollbar-color, so it gets the same look through the WebKit pseudo-elements */
+.scroll-row::-webkit-scrollbar {
+  height: 6px;
 }
 
-.purchase-history-table th:nth-child(1) {
-  width: 20%;
+.scroll-row::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: transparent;
 }
 
-.purchase-history-table th:nth-child(2) {
-  width: 20%;
+.purchase-group:hover .scroll-row::-webkit-scrollbar-thumb,
+.purchase-group:focus-within .scroll-row::-webkit-scrollbar-thumb {
+  background: var(--border);
 }
 
-.purchase-history-table th:nth-child(3) {
-  width: 38%;
-}
-
-.purchase-history-table th:nth-child(4) {
-  width: 22%;
-}
-
-.purchase-history-table .purchase-history-empty {
-  height: 170px;
-  color: #555;
-  text-align: center;
-}
-
-@media (max-width: 1100px) {
-  .purchasing-page,
-  .purchase-history-page {
-    padding: 36px 32px;
-  }
-
-  .purchasing-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+.scroll-row > li {
+  flex: 0 0 calc(var(--ar, 1) * var(--row-height));
+  min-width: 0;
 }
 
 @media (max-width: 800px) {
-  .purchasing-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .purchasing-header,
-  .purchase-history-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .purchasing-actions {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-
-  .purchase-history-summary {
-    flex-wrap: wrap;
+  .scroll-row {
+    --row-height: 130px;
   }
 }
 
-@media (max-width: 560px) {
-  .purchasing-page,
-  .purchase-history-page {
-    padding: 28px 18px;
-  }
+/* Header buttons: status | Save changes | Preview, then View sales history under both buttons */
+.purchase-actions {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 0.75rem;
+}
 
-  .purchasing-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px 12px;
-  }
+.purchase-actions .btn {
+  text-align: center;
+}
 
-  .purchasing-header h1,
-  .purchase-history-header h1 {
-    font-size: 26px;
+.purchase-history-btn {
+  grid-column: 2 / -1;
+}
+
+@media (max-width: 800px) {
+  .purchase-actions {
+    justify-content: start;
   }
 }
 
-@media (max-width: 370px) {
-  .purchasing-grid {
-    grid-template-columns: 1fr;
-  }
+.section-hint {
+  margin: -0.5rem 0 1rem;
+  font-size: 0.85rem;
+}
+
+/* Label over a not-for-sale image while it's hovered or focused, saying what a click does */
+.add-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgb(48 42 42 / 0.55);
+  color: #fff;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+
+  opacity: 0;
+  pointer-events: none; /* clicks go through to the image button underneath */
+  transition: opacity 0.15s ease;
+}
+
+.thumb-frame:hover .add-overlay,
+.thumb-frame:has(.thumb-button:focus-visible) .add-overlay {
+  opacity: 1;
 }

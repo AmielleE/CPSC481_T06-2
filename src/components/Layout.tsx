@@ -1,26 +1,54 @@
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router'
+import { NavLink, Link } from 'react-router'
+import './Layout.css'
 
 const links = [
-  { to: '/', label: 'Home', icon: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10' },
-  { to: '/collections', label: 'Collections', icon: 'M3 6h6l2 2h10v11H3z' },
-  { to: '/purchasing', label: 'Purchasing', icon: 'M3 4h2l2 11h11l2-8H6M9 20h.01M17 20h.01' },
+  { to: '/', label: 'HOME' },
+  { to: '/collections', label: 'COLLECTIONS' },
+  { to: '/purchasing', label: 'IMAGES FOR PURCHASE' },
 ]
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="app-shell">
-      <nav className="sidebar" aria-label="Main navigation">
-        {links.map((link) => (
-          <NavLink key={link.to} to={link.to} className="sidebar-link" title={link.label}>
-            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d={link.icon} />
-            </svg>
-            <span>{link.label}</span>
-          </NavLink>
-        ))}
-      </nav>
-      <main className="main">{children}</main>
+
+      {/* Shared sidebar */}
+      <aside className="site-sidebar">
+
+        {/* Photographer branding */}
+        <div className="site-sidebar-brand">
+          <h2>John Doe</h2>
+          <p>PHOTOGRAPHY</p>
+        </div>
+
+        {/* Navigation */}
+        <nav className="site-sidebar-navigation" aria-label="Main navigation">
+          {links.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === '/'}
+              className={({ isActive }) =>
+                `site-sidebar-link${isActive ? ' site-sidebar-link-active' : ''}`
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Logout */}
+        <Link to="/login" className="site-sidebar-logout">
+          LOGOUT
+        </Link>
+
+      </aside>
+
+      {/* Page content */}
+      <main className="site-main">
+        {children}
+      </main>
+
     </div>
   )
 }

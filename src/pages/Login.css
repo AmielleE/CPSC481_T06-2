@@ -1,93 +1,258 @@
-/* Login page */
+/* ========================================
+   LOGIN PAGE
+======================================== */
+
 .login-page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    width: 100%;
-    min-height: 100vh;
-    background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 40px 20px;
+  box-sizing: border-box;
+
+  background-color: #f3f0e8;
+
+  font-family: Arial, sans-serif;
+}
+
+/* ========================================
+   LOGIN CONTAINER
+======================================== */
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  max-width: 480px;
+
+  padding: 30px 20px;
+  box-sizing: border-box;
+}
+
+/* ========================================
+   PHOTOGRAPHER BRANDING
+======================================== */
+
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  text-align: center;
+}
+
+.login-brand h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 56px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  line-height: 1.2;
+
+  color: #302a2a;
+
+  margin: 0;
+}
+
+.login-brand p {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 5px;
+
+  color: #776f68;
+
+  margin: 15px 0 0;
+}
+
+/* ========================================
+   DIVIDER
+======================================== */
+
+.login-divider {
+  width: 60px;
+  height: 1px;
+
+  background-color: #bcb5a9;
+
+  margin: 55px 0;
+}
+
+/* ========================================
+   LOGIN SECTION
+======================================== */
+
+.login-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+}
+
+.login-section h2 {
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 3px;
+
+  color: #302a2a;
+
+  margin: 0 0 45px;
+}
+
+/* ========================================
+   LOGIN FORM
+======================================== */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  gap: 30px;
+}
+
+/* Input groups */
+.login-field {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  gap: 12px;
+}
+
+/* Input labels */
+.login-field label {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+
+  color: #776f68;
+}
+
+/* Input fields */
+.login-form input {
+  width: 100%;
+  height: 45px;
+
+  padding: 8px 0;
+  box-sizing: border-box;
+
+  background-color: transparent;
+
+  border: none;
+  border-bottom: 1px solid #bcb5a9;
+  border-radius: 0;
+
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+
+  color: #302a2a;
+
+  outline: none;
+
+  transition: border-color 0.2s ease;
+}
+
+/* Placeholder text */
+.login-form input::placeholder {
+  color: #aaa39a;
+}
+
+/* Input focus */
+.login-form input:focus {
+  border-bottom-color: #302a2a;
+}
+
+/* ========================================
+   LOGIN BUTTON
+======================================== */
+
+.login-button {
+  width: 100%;
+
+  margin-top: 20px;
+  padding: 16px 30px;
+
+  background-color: #302a2a;
+  color: #f3f0e8;
+
+  border: 1px solid #302a2a;
+  border-radius: 0;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 3px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Button hover */
+.login-button:hover {
+  background-color: transparent;
+  color: #302a2a;
+}
+
+/* Button focus */
+.login-button:focus-visible {
+  outline: 2px solid #302a2a;
+  outline-offset: 4px;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+
+@media (max-width: 600px) {
+  .login-page {
+    padding: 30px 20px;
   }
-  
-  /* Login container */
+
   .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  
-    width: 100%;
-    max-width: 630px;
-    padding: 20px;
-    text-align: center;
+    padding: 20px 10px;
   }
-  
-  /* Heading */
-  .login-container h1 {
-    font-size: 42px;
-    font-weight: 400;
-    color: black;
+
+  .login-brand h1 {
+    font-size: 44px;
+  }
+
+  .login-brand p {
+    font-size: 10px;
+    letter-spacing: 4px;
+  }
+
+  .login-divider {
+    margin: 40px 0;
+  }
+
+  .login-section h2 {
+    font-size: 12px;
     margin-bottom: 35px;
   }
-  
-  /* Form */
+
   .login-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-    width: 100%;
+    gap: 25px;
   }
-  
-  /* Input fields */
+
   .login-form input {
-    width: 100%;
-    height: 56px;
-    box-sizing: border-box;
-  
-    background-color: #b3b3b3;
-    border: none;
-    border-radius: 10px;
-  
-    padding: 0 18px;
-    font-size: 26px;
-    color: black;
+    font-size: 15px;
   }
-  
-  /* Placeholder text */
-  .login-form input::placeholder {
-    color: white;
-  }
-  
-  /* Login button */
+
   .login-button {
-    background-color: #95b9d0;
-    color: white;
-  
-    border: none;
-    border-radius: 10px;
-  
-    padding: 10px 36px;
-    font-size: 26px;
-  
-    cursor: pointer;
+    padding: 14px 25px;
+    font-size: 12px;
   }
-  
-  .login-button:hover {
-    background-color: #719fbd;
-  }
-  
-  /* Responsive styling */
-  @media (max-width: 600px) {
-    .login-container h1 {
-      font-size: 30px;
-    }
-  
-    .login-form input {
-      font-size: 18px;
-      height: 50px;
-    }
-  
-    .login-form {
-      gap: 25px;
-    }
-  }
+}

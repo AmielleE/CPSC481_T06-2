@@ -1,0 +1,210 @@
+/* ========================================
+   SHARED PAGE LAYOUT
+======================================== */
+
+.app-shell {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #ffffff;
+  }
+  
+  /* ========================================
+     SIDEBAR
+  ======================================== */
+  
+  .site-sidebar {
+    width: 290px;
+    height: 100vh;
+  
+    position: sticky;
+    top: 0;
+  
+    flex-shrink: 0;
+  
+    display: flex;
+    flex-direction: column;
+  
+    padding: 45px 30px 35px;
+    box-sizing: border-box;
+  
+    background-color: #f3f0e8;
+    border-right: 1px solid #d8d3c8;
+  }
+  
+  /* ========================================
+     PHOTOGRAPHER BRANDING
+  ======================================== */
+  
+  .site-sidebar-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    width: 100%;
+    text-align: center;
+  }
+  
+  .site-sidebar-brand h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 36px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    line-height: 1.2;
+  
+    color: #302a2a;
+    margin: 0;
+  }
+  
+  .site-sidebar-brand p {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 4px;
+  
+    color: #776f68;
+    margin: 12px 0 0;
+  }
+  
+  /* ========================================
+     NAVIGATION
+  ======================================== */
+  
+  .site-sidebar-navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  
+    gap: 28px;
+    width: 100%;
+    flex: 1;
+  }
+  
+  .site-sidebar-link {
+    display: block;
+    width: 100%;
+  
+    padding: 8px 0;
+  
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.8px;
+    line-height: 1.4;
+  
+    color: #302a2a;
+    text-decoration: none;
+  
+    transition: color 0.2s ease;
+  }
+  
+  .site-sidebar-link:hover,
+  .site-sidebar-link:focus-visible {
+    color: #9a6b65;
+    text-decoration: none;
+  }
+  
+  /* Active page indicator */
+  .site-sidebar-link-active {
+    color: #9a6b65;
+  }
+  
+  /* ========================================
+     LOGOUT
+  ======================================== */
+  
+  .site-sidebar-logout {
+    display: block;
+    width: 100%;
+  
+    padding: 8px 0;
+  
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.8px;
+  
+    color: #302a2a;
+    text-decoration: none;
+  
+    transition: color 0.2s ease;
+  }
+  
+  .site-sidebar-logout:hover,
+  .site-sidebar-logout:focus-visible {
+    color: #9a6b65;
+    text-decoration: none;
+  }
+  
+  /* ========================================
+     MAIN CONTENT
+  ======================================== */
+  
+  .app-shell > main.site-main {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+    min-height: 100vh;
+  
+    margin: 0;
+    padding: 0;
+  
+    background-color: #ffffff;
+  }
+  
+  /* ========================================
+     RESPONSIVE DESIGN
+  ======================================== */
+  
+  @media (max-width: 800px) {
+    .site-sidebar {
+      width: 220px;
+      padding: 35px 20px 25px;
+    }
+  
+    .site-sidebar-brand h2 {
+      font-size: 30px;
+    }
+  
+    .site-sidebar-brand p {
+      font-size: 10px;
+      letter-spacing: 3px;
+    }
+  
+    .site-sidebar-navigation {
+      gap: 22px;
+    }
+  
+    .site-sidebar-link,
+    .site-sidebar-logout {
+      font-size: 12px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .site-sidebar {
+      width: 140px;
+      padding: 25px 12px 20px;
+    }
+  
+    .site-sidebar-brand h2 {
+      font-size: 23px;
+    }
+  
+    .site-sidebar-brand p {
+      font-size: 8px;
+      letter-spacing: 2px;
+    }
+  
+    .site-sidebar-navigation {
+      gap: 15px;
+    }
+  
+    .site-sidebar-link,
+    .site-sidebar-logout {
+      font-size: 11px;
+      letter-spacing: 0.3px;
+    }
+  }

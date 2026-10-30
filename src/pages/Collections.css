@@ -1,250 +1,584 @@
-/* Main collections page */
+/* ========================================
+   COLLECTIONS PAGE
+======================================== */
+
 .collections-page {
-    width: 100%;
-    min-height: 100vh;
-    padding: 70px 80px;
-    background-color: white;
+  width: 100%;
+  min-height: 100vh;
+  padding: 65px 60px 80px;
+  box-sizing: border-box;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+/* ========================================
+   PAGE HEADER
+======================================== */
+
+.collections-header {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 55px;
+}
+
+.collections-title {
+  font-family: var(--font-heading);
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* ========================================
+   COLLECTION GRID
+======================================== */
+
+.collections-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 55px 35px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* ========================================
+   COLLECTION PHOTO CARD
+======================================== */
+
+.collection-photo-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.collection-photo-preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: #e9e4db;
+}
+
+/* Collection image */
+.collection-preview-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s ease;
+}
+
+.collection-preview-image.visible {
+  opacity: 1;
+}
+
+.collection-preview-image.hidden {
+  opacity: 0;
+}
+
+.collection-photo-card:hover .collection-preview-image {
+  transform: scale(1.03);
+}
+
+/* ========================================
+   EMPTY COLLECTION
+======================================== */
+
+.collection-photo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #f1eee8;
+}
+
+.collection-photo-placeholder span {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: var(--color-text-muted);
+}
+
+/* ========================================
+   PRIVATE COLLECTION BADGE
+======================================== */
+
+.collection-photo-private-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 9px 12px;
+
+  background-color: rgba(48, 42, 42, 0.9);
+  color: #f3f0e8;
+
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+}
+
+/* ========================================
+   COLLECTION DETAILS
+======================================== */
+
+.collection-photo-details {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 18px;
+}
+
+.collection-photo-details h2 {
+  font-family: var(--font-heading);
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.collection-photo-count {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: var(--color-text-muted);
+}
+
+/* ========================================
+   ADD COLLECTION CARD
+======================================== */
+
+.collection-photo-add {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.collection-photo-add-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 1px dashed var(--color-border);
+  background-color: #faf9f6;
+  color: var(--color-accent);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.collection-photo-add:hover .collection-photo-add-preview {
+  background-color: var(--color-sidebar);
+  border-color: var(--color-accent);
+}
+
+.collection-photo-add-preview span {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+}
+
+.collection-photo-add .collection-photo-details h2 {
+  color: var(--color-text);
+}
+
+/* ========================================
+   MODAL OVERLAY
+======================================== */
+
+.collection-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(30, 25, 23, 0.45);
+  z-index: 100;
+}
+
+/* ========================================
+   MODAL
+======================================== */
+
+.collection-modal {
+  width: 100%;
+  max-width: 450px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  padding: 40px;
+  box-sizing: border-box;
+  background-color: var(--color-sidebar);
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
+}
+
+.collection-modal h2 {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+
+.collection-modal-description {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  margin: 0 0 35px;
+}
+
+/* ========================================
+   MODAL FORM
+======================================== */
+
+.collection-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.collection-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.collection-form-field label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: var(--color-text-muted);
+}
+
+.collection-form-field input {
+  width: 100%;
+  height: 45px;
+  padding: 8px 0;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.collection-form-field input::placeholder {
+  color: #aaa39a;
+}
+
+.collection-form-field input:focus {
+  border-bottom-color: var(--color-text);
+}
+
+/* ========================================
+   PRIVACY SECTION
+======================================== */
+
+.collection-privacy-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.collection-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.collection-checkbox input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+/* ========================================
+   PRIVACY INFORMATION BOX
+======================================== */
+
+.collection-privacy-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 18px;
+  background-color: #e9e1d6;
+  border-left: 2px solid var(--color-accent);
+}
+
+.collection-info-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-accent);
+  margin-top: 2px;
+}
+
+.collection-privacy-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.collection-privacy-info-text h3 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.collection-privacy-info-text p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ========================================
+   MODAL BUTTONS
+======================================== */
+
+.collection-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.collection-modal-buttons button {
+  padding: 12px 22px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.collection-cancel {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.collection-cancel:hover {
+  background-color: #e8e1d7;
+}
+
+.collection-create {
+  background-color: var(--color-text);
+  border: 1px solid var(--color-text);
+  color: var(--color-sidebar);
+}
+
+.collection-create:hover {
+  background-color: transparent;
+  color: var(--color-text);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+
+@media (max-width: 1250px) {
+  .collections-page {
+    padding: 55px 40px 70px;
   }
-  
-  /* Page heading */
+
+  .collections-photo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 750px;
+    gap: 45px 30px;
+  }
+
+  .collections-header {
+    max-width: 750px;
+  }
+}
+
+@media (max-width: 750px) {
+  .collections-page {
+    padding: 40px 25px 60px;
+  }
+
   .collections-title {
-    font-size: 42px;
-    font-weight: 400;
-    color: black;
-    margin-bottom: 100px;
+    font-size: 34px;
   }
-  
-  /* Collection grid */
-  .collections-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 100px 70px;
-    justify-items: center;
+
+  .collections-photo-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    gap: 40px;
   }
-  
-  /* Individual collection card */
-  .collection-card {
-    width: 100%;
-    max-width: 260px;
-    height: 260px;
-  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    background-color: transparent;
-    border: none;
-    border-radius: 12px;
-  
-    text-decoration: none;
-    color: black;
-  
-    cursor: pointer;
-    transition: transform 0.2s;
+
+  .collections-header {
+    max-width: 400px;
+    margin-bottom: 40px;
   }
-  
-  .collection-card:hover {
-    transform: translateY(-5px);
+}
+
+@media (max-width: 480px) {
+  .collections-page {
+    padding: 30px 15px 50px;
   }
-  
-  /* Stacked collection design */
-  .collection-stack {
-    position: relative;
-    width: 210px;
-    height: 210px;
+
+  .collections-title {
+    font-size: 28px;
   }
-  
-  /* Back layer */
-  .collection-stack-back {
-    position: absolute;
-    top: 0;
-    left: 20px;
-  
-    width: 190px;
-    height: 190px;
-  
-    background-color: white;
-    border: 2px solid #333;
-  }
-  
-  /* Middle layer */
-  .collection-stack-middle {
-    position: absolute;
-    top: 8px;
-    left: 10px;
-  
-    width: 190px;
-    height: 190px;
-  
-    background-color: white;
-    border: 2px solid #333;
-  }
-  
-  /* Front layer */
-  .collection-stack-front {
-    position: absolute;
-    top: 16px;
-    left: 0;
-  
-    width: 190px;
-    height: 190px;
-  
-    background-color: white;
-    border: 2px solid #333;
-  
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  
-    gap: 10px;
-    padding: 15px;
-    text-align: center;
-  
+
+  .collection-photo-details h2 {
     font-size: 22px;
   }
-  
-  /* Private collections */
-  .collection-card.private {
-    opacity: 0.5;
-  }
-  
-  .private-label {
-    font-size: 14px;
-    color: #777;
-  }
-  
-  /* Add collection card */
-  .add-collection-card {
-    font-family: inherit;
-  }
-  
-  .add-collection-card .collection-stack-front {
-    border-color: #669bbc;
-    color: #669bbc;
-  }
-  
-  .add-collection-card .collection-stack-middle,
-  .add-collection-card .collection-stack-back {
-    border-color: #669bbc;
-  }
-  
-  .add-icon {
-    font-size: 60px;
-    font-weight: 300;
-    line-height: 1;
-  }
-  
-  /* Modal background */
-  .collection-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    z-index: 100;
-  }
-  
-  /* Modal */
+
   .collection-modal {
-    width: 90%;
-    max-width: 450px;
-  
-    padding: 35px;
-    background-color: white;
-    border-radius: 12px;
-  
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 30px 25px;
   }
-  
+
   .collection-modal h2 {
-    margin: 0 0 25px;
     font-size: 28px;
-    font-weight: 500;
-    color: black;
   }
-  
-  /* Modal form */
-  .collection-modal form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+
+  .collection-modal-buttons button {
+    padding: 10px 16px;
+    font-size: 11px;
   }
-  
-  .collection-modal label {
-    font-size: 16px;
-    color: #333;
-  }
-  
-  .collection-modal input[type="text"] {
-    width: 100%;
-    height: 45px;
-  
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  
-    font-size: 16px;
-  }
-  
-  .collection-checkbox {
-    display: flex;
-    align-items: center;
+
+  .collection-privacy-info {
+    padding: 14px;
     gap: 10px;
   }
-  
-  .collection-modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 20px;
-  }
-  
-  .collection-modal-buttons button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+
+  .collection-privacy-info-text h3 {
     font-size: 16px;
   }
-  
-  .collection-cancel {
-    background-color: #e5e5e5;
-    color: black;
+
+  .collection-privacy-info-text p {
+    font-size: 12px;
   }
-  
-  .collection-create {
-    background-color: #669bbc;
-    color: white;
+}
+
+/* ========================================
+   COLLECTIONS PREVIEW MODE
+======================================== */
+
+.collections-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Preview / Exit Preview button */
+.collections-preview-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 20px;
+
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+
+  color: var(--color-text);
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.collections-preview-button:hover {
+  background-color: var(--color-sidebar);
+  border-color: var(--color-text);
+}
+
+.collections-preview-button.active {
+  background-color: var(--color-text);
+  border-color: var(--color-text);
+  color: #ffffff;
+}
+
+.collections-preview-button.active:hover {
+  background-color: #514644;
+}
+
+/* Empty preview state */
+.collections-preview-empty {
+  width: 100%;
+  max-width: 1100px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+.collections-preview-empty p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .collections-header {
+    align-items: flex-start;
+    gap: 15px;
   }
-  
-  /* Responsive layout */
-  @media (max-width: 1100px) {
-    .collections-page {
-      padding: 50px 35px;
-    }
-  
-    .collections-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 60px 30px;
-    }
+
+  .collections-preview-button {
+    padding: 10px 12px;
+    font-size: 10px;
+    gap: 6px;
   }
-  
-  @media (max-width: 650px) {
-    .collections-page {
-      padding: 30px 15px;
-    }
-  
-    .collections-title {
-      font-size: 30px;
-      margin-bottom: 50px;
-    }
-  
-    .collections-grid {
-      grid-template-columns: 1fr;
-      gap: 35px;
-    }
-  }
+}
