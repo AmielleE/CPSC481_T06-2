@@ -1,250 +1,534 @@
-/* Main collections page */
+/* ========================================
+   COLLECTIONS PAGE
+======================================== */
+
 .collections-page {
-    width: 100%;
-    min-height: 100vh;
-    padding: 70px 80px;
-    background-color: white;
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 65px 60px 80px;
+  box-sizing: border-box;
+
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+
+/* ========================================
+   PAGE HEADER
+======================================== */
+
+.collections-header {
+  width: 100%;
+  max-width: 980px;
+
+  margin: 0 auto 65px;
+}
+
+.collections-title {
+  font-family: var(--font-heading);
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1.2;
+
+  color: var(--color-text);
+
+  margin: 0 0 12px;
+}
+
+.collections-subtitle {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+
+  color: var(--color-text-muted);
+
+  margin: 0;
+}
+
+
+/* ========================================
+   COLLECTIONS GRID
+======================================== */
+
+.collections-grid {
+  display: grid;
+
+  grid-template-columns: repeat(
+    3,
+    minmax(0, 1fr)
+  );
+
+  column-gap: 45px;
+  row-gap: 65px;
+
+  width: 100%;
+  max-width: 980px;
+
+  margin: 0 auto;
+
+  justify-items: start;
+  align-items: start;
+}
+
+
+/* ========================================
+   COLLECTION CARD
+======================================== */
+
+.collection-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+
+  width: 100%;
+  min-width: 0;
+
+  padding: 0;
+
+  background: transparent;
+  border: none;
+  border-radius: 0;
+
+  color: var(--color-text);
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition: transform 0.25s ease;
+}
+
+.collection-card:hover {
+  transform: translateY(-5px);
+}
+
+.collection-card:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 8px;
+}
+
+
+/* ========================================
+   STACKED COLLECTION DESIGN
+======================================== */
+
+.collection-stack {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 1;
+
+  padding: 0 18px 18px 0;
+
+  box-sizing: border-box;
+}
+
+/* Shared stack layer styling */
+.collection-stack-back,
+.collection-stack-middle,
+.collection-stack-front {
+  position: absolute;
+
+  width: calc(100% - 18px);
+  height: calc(100% - 18px);
+
+  border: 1px solid var(--color-text);
+  box-sizing: border-box;
+}
+
+/* Back layer */
+.collection-stack-back {
+  top: 0;
+  left: 18px;
+
+  background-color: #e9e4db;
+}
+
+/* Middle layer */
+.collection-stack-middle {
+  top: 9px;
+  left: 9px;
+
+  background-color: #f5f2ec;
+}
+
+/* Front layer */
+.collection-stack-front {
+  top: 18px;
+  left: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+  padding: 20px;
+
+  background-color: #faf9f6;
+
+  text-align: center;
+}
+
+
+/* ========================================
+   COLLECTION NAME
+======================================== */
+
+.collection-name {
+  font-family: var(--font-heading);
+  font-size: clamp(19px, 2vw, 25px);
+  font-weight: 400;
+  line-height: 1.3;
+
+  color: var(--color-text);
+
+  overflow-wrap: anywhere;
+}
+
+
+/* ========================================
+   PRIVATE COLLECTIONS
+======================================== */
+
+.collection-card.private {
+  opacity: 1;
+}
+
+.private-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+
+  letter-spacing: 2px;
+
+  color: var(--color-accent);
+}
+
+
+/* ========================================
+   ADD COLLECTION CARD
+======================================== */
+
+.add-collection-card {
+  font-family: var(--font-body);
+}
+
+.add-collection-card .collection-stack-back {
+  background-color: #e8dfd5;
+  border-color: var(--color-accent);
+}
+
+.add-collection-card .collection-stack-middle {
+  background-color: #f1ebe3;
+  border-color: var(--color-accent);
+}
+
+.add-collection-card .collection-stack-front {
+  background-color: #f8f4ee;
+  border-color: var(--color-accent);
+}
+
+.add-icon {
+  font-family: var(--font-heading);
+  font-size: 58px;
+  font-weight: 300;
+  line-height: 1;
+
+  color: var(--color-accent);
+}
+
+.add-collection-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+
+  letter-spacing: 1.5px;
+
+  color: var(--color-accent);
+}
+
+
+/* ========================================
+   MODAL OVERLAY
+======================================== */
+
+.collection-modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background-color: rgba(30, 25, 23, 0.45);
+
+  z-index: 100;
+}
+
+
+/* ========================================
+   MODAL
+======================================== */
+
+.collection-modal {
+  width: 100%;
+  max-width: 450px;
+
+  padding: 40px;
+  box-sizing: border-box;
+
+  background-color: var(--color-sidebar);
+
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
+}
+
+.collection-modal h2 {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 400;
+
+  color: var(--color-text);
+
+  margin: 0 0 12px;
+}
+
+.collection-modal-description {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+
+  color: var(--color-text-muted);
+
+  margin: 0 0 35px;
+}
+
+
+/* ========================================
+   MODAL FORM
+======================================== */
+
+.collection-modal form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 25px;
+}
+
+.collection-form-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.collection-form-field label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+
+  letter-spacing: 2px;
+
+  color: var(--color-text-muted);
+}
+
+.collection-form-field input {
+  width: 100%;
+  height: 45px;
+
+  padding: 8px 0;
+
+  background-color: transparent;
+
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+
+  font-family: var(--font-body);
+  font-size: 16px;
+
+  color: var(--color-text);
+
+  outline: none;
+
+  transition: border-color 0.2s ease;
+}
+
+.collection-form-field input::placeholder {
+  color: #aaa39a;
+}
+
+.collection-form-field input:focus {
+  border-bottom-color: var(--color-text);
+}
+
+
+/* ========================================
+   PRIVATE COLLECTION CHECKBOX
+======================================== */
+
+.collection-checkbox {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  font-family: var(--font-body);
+  font-size: 14px;
+
+  color: var(--color-text);
+
+  cursor: pointer;
+}
+
+.collection-checkbox input {
+  width: 16px;
+  height: 16px;
+
+  margin: 0;
+
+  accent-color: var(--color-accent);
+
+  cursor: pointer;
+}
+
+
+/* ========================================
+   MODAL BUTTONS
+======================================== */
+
+.collection-modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.collection-modal-buttons button {
+  padding: 12px 22px;
+
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+
+  letter-spacing: 1.5px;
+
+  border-radius: 0;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Cancel */
+.collection-cancel {
+  background-color: transparent;
+
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.collection-cancel:hover {
+  background-color: #e8e1d7;
+}
+
+/* Create */
+.collection-create {
+  background-color: var(--color-text);
+
+  border: 1px solid var(--color-text);
+  color: var(--color-sidebar);
+}
+
+.collection-create:hover {
+  background-color: transparent;
+  color: var(--color-text);
+}
+
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+
+/* Medium screens */
+@media (max-width: 1250px) {
+  .collections-page {
+    padding: 55px 40px 70px;
   }
-  
-  /* Page heading */
-  .collections-title {
-    font-size: 42px;
-    font-weight: 400;
-    color: black;
-    margin-bottom: 100px;
-  }
-  
-  /* Collection grid */
+
   .collections-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 100px 70px;
-    justify-items: center;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    column-gap: 45px;
+    row-gap: 55px;
+
+    max-width: 650px;
   }
-  
-  /* Individual collection card */
-  .collection-card {
-    width: 100%;
-    max-width: 260px;
-    height: 260px;
-  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    background-color: transparent;
-    border: none;
-    border-radius: 12px;
-  
-    text-decoration: none;
-    color: black;
-  
-    cursor: pointer;
-    transition: transform 0.2s;
+
+  .collections-header {
+    max-width: 650px;
   }
-  
-  .collection-card:hover {
-    transform: translateY(-5px);
+}
+
+/* Smaller screens */
+@media (max-width: 750px) {
+  .collections-page {
+    padding: 40px 25px 60px;
   }
-  
-  /* Stacked collection design */
-  .collection-stack {
-    position: relative;
-    width: 210px;
-    height: 210px;
+
+  .collections-title {
+    font-size: 34px;
   }
-  
-  /* Back layer */
-  .collection-stack-back {
-    position: absolute;
-    top: 0;
-    left: 20px;
-  
-    width: 190px;
-    height: 190px;
-  
-    background-color: white;
-    border: 2px solid #333;
+
+  .collections-header {
+    margin-bottom: 45px;
   }
-  
-  /* Middle layer */
-  .collection-stack-middle {
-    position: absolute;
-    top: 8px;
-    left: 10px;
-  
-    width: 190px;
-    height: 190px;
-  
-    background-color: white;
-    border: 2px solid #333;
+
+  .collections-grid {
+    grid-template-columns: 1fr;
+
+    max-width: 300px;
+    row-gap: 45px;
   }
-  
-  /* Front layer */
-  .collection-stack-front {
-    position: absolute;
-    top: 16px;
-    left: 0;
-  
-    width: 190px;
-    height: 190px;
-  
-    background-color: white;
-    border: 2px solid #333;
-  
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  
-    gap: 10px;
-    padding: 15px;
-    text-align: center;
-  
-    font-size: 22px;
+
+  .collections-header {
+    max-width: 300px;
   }
-  
-  /* Private collections */
-  .collection-card.private {
-    opacity: 0.5;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .collections-page {
+    padding: 30px 15px 50px;
   }
-  
-  .private-label {
-    font-size: 14px;
-    color: #777;
-  }
-  
-  /* Add collection card */
-  .add-collection-card {
-    font-family: inherit;
-  }
-  
-  .add-collection-card .collection-stack-front {
-    border-color: #669bbc;
-    color: #669bbc;
-  }
-  
-  .add-collection-card .collection-stack-middle,
-  .add-collection-card .collection-stack-back {
-    border-color: #669bbc;
-  }
-  
-  .add-icon {
-    font-size: 60px;
-    font-weight: 300;
-    line-height: 1;
-  }
-  
-  /* Modal background */
-  .collection-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  
-    z-index: 100;
-  }
-  
-  /* Modal */
-  .collection-modal {
-    width: 90%;
-    max-width: 450px;
-  
-    padding: 35px;
-    background-color: white;
-    border-radius: 12px;
-  
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  }
-  
-  .collection-modal h2 {
-    margin: 0 0 25px;
+
+  .collections-title {
     font-size: 28px;
-    font-weight: 500;
-    color: black;
   }
-  
-  /* Modal form */
-  .collection-modal form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+
+  .collections-subtitle {
+    font-size: 12px;
   }
-  
-  .collection-modal label {
-    font-size: 16px;
-    color: #333;
+
+  .collection-modal {
+    padding: 30px 25px;
   }
-  
-  .collection-modal input[type="text"] {
-    width: 100%;
-    height: 45px;
-  
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  
-    font-size: 16px;
+
+  .collection-modal h2 {
+    font-size: 28px;
   }
-  
-  .collection-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .collection-modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 20px;
-  }
-  
+
   .collection-modal-buttons button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
+    padding: 10px 16px;
+    font-size: 11px;
   }
-  
-  .collection-cancel {
-    background-color: #e5e5e5;
-    color: black;
-  }
-  
-  .collection-create {
-    background-color: #669bbc;
-    color: white;
-  }
-  
-  /* Responsive layout */
-  @media (max-width: 1100px) {
-    .collections-page {
-      padding: 50px 35px;
-    }
-  
-    .collections-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 60px 30px;
-    }
-  }
-  
-  @media (max-width: 650px) {
-    .collections-page {
-      padding: 30px 15px;
-    }
-  
-    .collections-title {
-      font-size: 30px;
-      margin-bottom: 50px;
-    }
-  
-    .collections-grid {
-      grid-template-columns: 1fr;
-      gap: 35px;
-    }
-  }
+}
