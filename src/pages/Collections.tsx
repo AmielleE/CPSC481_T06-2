@@ -31,7 +31,7 @@ export default function Collections() {
     const newCollection: Collection = {
       id: Date.now(),
       name: newName.trim(),
-      isPrivate: isPrivate,
+      isPrivate,
     }
 
     setCollections([...collections, newCollection])
@@ -56,10 +56,6 @@ export default function Collections() {
           <h1 className="collections-title">
             All Collections
           </h1>
-
-          <p className="collections-subtitle">
-            Your photography, thoughtfully organized.
-          </p>
         </header>
 
         {/* Collections grid */}
@@ -84,14 +80,41 @@ export default function Collections() {
                 {/* Front layer */}
                 <div className="collection-stack-front">
 
+                  {collection.isPrivate && (
+                    <svg
+                      className="collection-lock-icon"
+                      viewBox="0 0 24 24"
+                      width="26"
+                      height="26"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <rect
+                        x="5"
+                        y="10"
+                        width="14"
+                        height="11"
+                        rx="1"
+                      />
+                      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                    </svg>
+                  )}
+
                   <span className="collection-name">
                     {collection.name}
                   </span>
 
                   {collection.isPrivate && (
-                    <span className="private-label">
-                      PRIVATE
-                    </span>
+                    <div className="collection-private-indicator">
+                      <span className="private-divider" />
+                      <span className="private-label">
+                        PRIVATE COLLECTION
+                      </span>
+                    </div>
                   )}
 
                 </div>
@@ -175,17 +198,63 @@ export default function Collections() {
                 </div>
 
                 {/* Privacy setting */}
-                <label className="collection-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={isPrivate}
-                    onChange={(event) =>
-                      setIsPrivate(event.target.checked)
-                    }
-                  />
+                <div className="collection-privacy-section">
 
-                  <span>Make this collection private</span>
-                </label>
+                  <label className="collection-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={isPrivate}
+                      onChange={(event) =>
+                        setIsPrivate(event.target.checked)
+                      }
+                      aria-describedby={
+                        isPrivate
+                          ? 'collection-privacy-info'
+                          : undefined
+                      }
+                    />
+
+                    <span>Make this collection private</span>
+                  </label>
+
+                  {/* Privacy explanation */}
+                  {isPrivate && (
+                    <div
+                      className="collection-privacy-info"
+                      id="collection-privacy-info"
+                      role="status"
+                    >
+                      <svg
+                        className="collection-info-icon"
+                        viewBox="0 0 24 24"
+                        width="20"
+                        height="20"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 11v5" />
+                        <path d="M12 8h.01" />
+                      </svg>
+
+                      <div className="collection-privacy-info-text">
+                        <h3>About private collections</h3>
+
+                        <p>
+                          Private collections can only be viewed by
+                          people who have access to the collection
+                          link. They will not appear in the general
+                          collections view.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
 
                 {/* Modal buttons */}
                 <div className="collection-modal-buttons">

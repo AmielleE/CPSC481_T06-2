@@ -5,14 +5,11 @@
 .collections-page {
   width: 100%;
   min-height: 100vh;
-
   padding: 65px 60px 80px;
   box-sizing: border-box;
-
   background-color: var(--color-background);
   color: var(--color-text);
 }
-
 
 /* ========================================
    PAGE HEADER
@@ -21,7 +18,6 @@
 .collections-header {
   width: 100%;
   max-width: 980px;
-
   margin: 0 auto 65px;
 }
 
@@ -30,9 +26,7 @@
   font-size: 42px;
   font-weight: 400;
   line-height: 1.2;
-
   color: var(--color-text);
-
   margin: 0 0 12px;
 }
 
@@ -41,12 +35,9 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 1.6;
-
   color: var(--color-text-muted);
-
   margin: 0;
 }
-
 
 /* ========================================
    COLLECTIONS GRID
@@ -54,24 +45,15 @@
 
 .collections-grid {
   display: grid;
-
-  grid-template-columns: repeat(
-    3,
-    minmax(0, 1fr)
-  );
-
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: 45px;
   row-gap: 65px;
-
   width: 100%;
   max-width: 980px;
-
   margin: 0 auto;
-
   justify-items: start;
   align-items: start;
 }
-
 
 /* ========================================
    COLLECTION CARD
@@ -81,21 +63,15 @@
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-
   width: 100%;
   min-width: 0;
-
   padding: 0;
-
   background: transparent;
   border: none;
   border-radius: 0;
-
   color: var(--color-text);
   text-decoration: none;
-
   cursor: pointer;
-
   transition: transform 0.25s ease;
 }
 
@@ -108,31 +84,24 @@
   outline-offset: 8px;
 }
 
-
 /* ========================================
    STACKED COLLECTION DESIGN
 ======================================== */
 
 .collection-stack {
   position: relative;
-
   width: 100%;
   aspect-ratio: 1;
-
   padding: 0 18px 18px 0;
-
   box-sizing: border-box;
 }
 
-/* Shared stack layer styling */
 .collection-stack-back,
 .collection-stack-middle,
 .collection-stack-front {
   position: absolute;
-
   width: calc(100% - 18px);
   height: calc(100% - 18px);
-
   border: 1px solid var(--color-text);
   box-sizing: border-box;
 }
@@ -141,7 +110,6 @@
 .collection-stack-back {
   top: 0;
   left: 18px;
-
   background-color: #e9e4db;
 }
 
@@ -149,7 +117,6 @@
 .collection-stack-middle {
   top: 9px;
   left: 9px;
-
   background-color: #f5f2ec;
 }
 
@@ -157,20 +124,15 @@
 .collection-stack-front {
   top: 18px;
   left: 0;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   gap: 12px;
   padding: 20px;
-
   background-color: #faf9f6;
-
   text-align: center;
 }
-
 
 /* ========================================
    COLLECTION NAME
@@ -181,12 +143,9 @@
   font-size: clamp(19px, 2vw, 25px);
   font-weight: 400;
   line-height: 1.3;
-
   color: var(--color-text);
-
   overflow-wrap: anywhere;
 }
-
 
 /* ========================================
    PRIVATE COLLECTIONS
@@ -196,16 +155,51 @@
   opacity: 1;
 }
 
+.collection-card.private .collection-stack-back {
+  background-color: #c9b9a7;
+  border-color: #77685c;
+}
+
+.collection-card.private .collection-stack-middle {
+  background-color: #ded1c1;
+  border-color: #77685c;
+}
+
+.collection-card.private .collection-stack-front {
+  background-color: #eae0d3;
+  border-color: #77685c;
+}
+
+.collection-lock-icon {
+  width: 26px;
+  height: 26px;
+  color: #77685c;
+  flex-shrink: 0;
+}
+
+.collection-private-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.private-divider {
+  display: block;
+  width: 35px;
+  height: 1px;
+  background-color: #b3a18e;
+}
+
 .private-label {
   font-family: var(--font-body);
   font-size: 10px;
-  font-weight: 400;
-
-  letter-spacing: 2px;
-
-  color: var(--color-accent);
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  line-height: 1.4;
+  color: #77685c;
 }
-
 
 /* ========================================
    ADD COLLECTION CARD
@@ -235,7 +229,6 @@
   font-size: 58px;
   font-weight: 300;
   line-height: 1;
-
   color: var(--color-accent);
 }
 
@@ -243,12 +236,9 @@
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 400;
-
   letter-spacing: 1.5px;
-
   color: var(--color-accent);
 }
-
 
 /* ========================================
    MODAL OVERLAY
@@ -257,18 +247,13 @@
 .collection-modal-overlay {
   position: fixed;
   inset: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   background-color: rgba(30, 25, 23, 0.45);
-
   z-index: 100;
 }
-
 
 /* ========================================
    MODAL
@@ -277,15 +262,13 @@
 .collection-modal {
   width: 100%;
   max-width: 450px;
-
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
   padding: 40px;
   box-sizing: border-box;
-
   background-color: var(--color-sidebar);
-
   border: 1px solid var(--color-border);
   border-radius: 0;
-
   box-shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
 }
 
@@ -293,9 +276,7 @@
   font-family: var(--font-heading);
   font-size: 32px;
   font-weight: 400;
-
   color: var(--color-text);
-
   margin: 0 0 12px;
 }
 
@@ -303,12 +284,9 @@
   font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.5;
-
   color: var(--color-text-muted);
-
   margin: 0 0 35px;
 }
-
 
 /* ========================================
    MODAL FORM
@@ -317,14 +295,12 @@
 .collection-modal form {
   display: flex;
   flex-direction: column;
-
   gap: 25px;
 }
 
 .collection-form-field {
   display: flex;
   flex-direction: column;
-
   gap: 10px;
 }
 
@@ -332,31 +308,22 @@
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 400;
-
   letter-spacing: 2px;
-
   color: var(--color-text-muted);
 }
 
 .collection-form-field input {
   width: 100%;
   height: 45px;
-
   padding: 8px 0;
-
   background-color: transparent;
-
   border: none;
   border-bottom: 1px solid var(--color-border);
   border-radius: 0;
-
   font-family: var(--font-body);
   font-size: 16px;
-
   color: var(--color-text);
-
   outline: none;
-
   transition: border-color 0.2s ease;
 }
 
@@ -368,36 +335,77 @@
   border-bottom-color: var(--color-text);
 }
 
-
 /* ========================================
-   PRIVATE COLLECTION CHECKBOX
+   PRIVACY SECTION
 ======================================== */
+
+.collection-privacy-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
 .collection-checkbox {
   display: flex;
   align-items: center;
-
   gap: 12px;
-
   font-family: var(--font-body);
   font-size: 14px;
-
   color: var(--color-text);
-
   cursor: pointer;
 }
 
 .collection-checkbox input {
   width: 16px;
   height: 16px;
-
   margin: 0;
-
   accent-color: var(--color-accent);
-
   cursor: pointer;
 }
 
+/* ========================================
+   PRIVACY INFORMATION BOX
+======================================== */
+
+.collection-privacy-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 18px;
+  background-color: #e9e1d6;
+  border-left: 2px solid var(--color-accent);
+}
+
+.collection-info-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--color-accent);
+  margin-top: 2px;
+}
+
+.collection-privacy-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.collection-privacy-info-text h3 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.collection-privacy-info-text p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0;
+}
 
 /* ========================================
    MODAL BUTTONS
@@ -406,33 +414,25 @@
 .collection-modal-buttons {
   display: flex;
   justify-content: flex-end;
-
   gap: 12px;
   margin-top: 15px;
 }
 
 .collection-modal-buttons button {
   padding: 12px 22px;
-
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 400;
-
   letter-spacing: 1.5px;
-
   border-radius: 0;
-
   cursor: pointer;
-
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
 }
 
-/* Cancel */
 .collection-cancel {
   background-color: transparent;
-
   border: 1px solid var(--color-border);
   color: var(--color-text);
 }
@@ -441,10 +441,8 @@
   background-color: #e8e1d7;
 }
 
-/* Create */
 .collection-create {
   background-color: var(--color-text);
-
   border: 1px solid var(--color-text);
   color: var(--color-sidebar);
 }
@@ -454,12 +452,10 @@
   color: var(--color-text);
 }
 
-
 /* ========================================
    RESPONSIVE DESIGN
 ======================================== */
 
-/* Medium screens */
 @media (max-width: 1250px) {
   .collections-page {
     padding: 55px 40px 70px;
@@ -467,10 +463,8 @@
 
   .collections-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-
     column-gap: 45px;
     row-gap: 55px;
-
     max-width: 650px;
   }
 
@@ -479,7 +473,6 @@
   }
 }
 
-/* Smaller screens */
 @media (max-width: 750px) {
   .collections-page {
     padding: 40px 25px 60px;
@@ -491,21 +484,16 @@
 
   .collections-header {
     margin-bottom: 45px;
+    max-width: 300px;
   }
 
   .collections-grid {
     grid-template-columns: 1fr;
-
     max-width: 300px;
     row-gap: 45px;
   }
-
-  .collections-header {
-    max-width: 300px;
-  }
 }
 
-/* Mobile */
 @media (max-width: 480px) {
   .collections-page {
     padding: 30px 15px 50px;
@@ -530,5 +518,18 @@
   .collection-modal-buttons button {
     padding: 10px 16px;
     font-size: 11px;
+  }
+
+  .collection-privacy-info {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .collection-privacy-info-text h3 {
+    font-size: 16px;
+  }
+
+  .collection-privacy-info-text p {
+    font-size: 12px;
   }
 }
