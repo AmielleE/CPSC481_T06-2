@@ -12,9 +12,9 @@ type Collection = {
 
 export default function Collections() {
   const [collections, setCollections] = useState<Collection[]>([
-    { id: 1, name: 'Collection 1', isPrivate: false },
-    { id: 2, name: 'Collection 2', isPrivate: false },
-    { id: 3, name: 'Collection 3', isPrivate: false },
+    { id: 1, name: 'Spain/Portugal', isPrivate: false },
+    { id: 2, name: 'Alberta', isPrivate: false },
+    { id: 3, name: 'Patagonia', isPrivate: false },
     { id: 4, name: 'Collection 4', isPrivate: false },
     { id: 5, name: 'Collection 5', isPrivate: true },
   ])

@@ -40,18 +40,61 @@ async function makeThumbnail(file: File) {
   }
 }
 
-// Blank stand-ins for photos so the prototype can be walked through on GitHub Pages without real images.
-// Shapes vary (landscape, portrait, square) so the original-aspect-ratio thumbnails are visible.
-const PLACEHOLDER_RATIOS = [3 / 2, 2 / 3, 1, 4 / 3, 3 / 4, 16 / 9]
+// Sample photos bundled with the prototype. Each <name>.jpg has a pre-made <name>_thumb.jpg beside it
+// (480px long side) so the grids stay fast.
+const sampleUrls = import.meta.glob<string>('../assets/images/*/*.jpg', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+})
 
-function makePlaceholders(collectionId: string, count: number): LibraryImage[] {
-  return Array.from({ length: count }, (_, i) => ({
+const LANDSCAPE = 3 / 2
+const PORTRAIT = 2 / 3
+
+// [folder/file name, width / height]
+type SamplePhoto = [string, number]
+
+const COLLECTION_1: SamplePhoto[] = [
+  ['collection1/DSC00013', LANDSCAPE],
+  ['collection1/DSC00098', LANDSCAPE],
+  ['collection1/DSC00459', PORTRAIT],
+  ['collection1/DSC00668', PORTRAIT],
+  ['collection1/DSC00988', LANDSCAPE],
+  ['collection1/DSC01203', 3723 / 5630],
+  ['collection1/DSC01503', LANDSCAPE],
+  ['collection1/DSC01538', LANDSCAPE],
+  ['collection1/DSC01662', 3874 / 5922],
+  ['collection1/DSC01743', PORTRAIT],
+  ['collection1/DSC01755', PORTRAIT],
+]
+
+const COLLECTION_2: SamplePhoto[] = [
+  ['collection2/20230723_0102', LANDSCAPE],
+  ['collection2/20230828_0269', LANDSCAPE],
+  ['collection2/20230828_0389', LANDSCAPE],
+  ['collection2/20230916_0012', LANDSCAPE],
+  ['collection2/20230916_0022', LANDSCAPE],
+  ['collection2/20230916_0131', LANDSCAPE],
+]
+
+const COLLECTION_3: SamplePhoto[] = [
+  ['collection3/20241119_0055', LANDSCAPE],
+  ['collection3/20241119_0124', LANDSCAPE],
+  ['collection3/20241119_0155', 5969 / 3948],
+  ['collection3/20241119_0186', LANDSCAPE],
+  ['collection3/20241119_0189', LANDSCAPE],
+  ['collection3/20241119_0230', LANDSCAPE],
+  ['collection3/20241119_0331', LANDSCAPE],
+]
+
+function makeSamples(collectionId: string, photos: SamplePhoto[]): LibraryImage[] {
+  return photos.map(([path, aspectRatio], i) => ({
     id: `${collectionId}-img-${i + 1}`,
-    title: `Image ${i + 1}`,
-    description: i % 2 === 0 ? 'A short description of this photo.' : '',
-    src: null,
-    thumbSrc: null,
-    aspectRatio: PLACEHOLDER_RATIOS[i % PLACEHOLDER_RATIOS.length],
+    title: path.split('/')[1],
+    description: '',
+    src: sampleUrls[`../assets/images/${path}.jpg`],
+    thumbSrc: sampleUrls[`../assets/images/${path}_thumb.jpg`],
+    aspectRatio,
     forSale: i % 4 === 0,
     price: i % 4 === 0 ? 25 + i * 5 : null,
   }))
@@ -61,38 +104,39 @@ function makePlaceholders(collectionId: string, count: number): LibraryImage[] {
 const initialCollections: Collection[] = [
   {
     id: '1',
-    name: 'Collection 1',
-    info: 'General info about this collection.\nUse this space for context about the shoot or project.',
+    name: 'Spain/Portugal',
+    info: '',
     isPrivate: false,
-    images: makePlaceholders('1', 12),
+    images: makeSamples('1', COLLECTION_1),
   },
   {
     id: '2',
-    name: 'Collection 2',
-    info: 'General info about this collection.',
+    name: 'Alberta',
+    info: '',
     isPrivate: false,
-    images: makePlaceholders('2', 8),
+    images: makeSamples('2', COLLECTION_2),
   },
   {
     id: '3',
-    name: 'Collection 3',
-    info: 'General info about this collection.',
+    name: 'Patagonia',
+    info: '',
     isPrivate: false,
-    images: makePlaceholders('3', 6),
+    images: makeSamples('3', COLLECTION_3),
   },
   {
     id: '4',
     name: 'Collection 4',
-    info: '', // empty collection: shows the "add images" state
+    info: '',
     isPrivate: false,
-    images: [],
+    images: [], // empty collection: shows the "add images" state
   },
   {
     id: '5',
     name: 'Collection 5',
-    info: 'General info about this collection.',
+    info: '',
     isPrivate: true,
-    images: makePlaceholders('5', 5),
+    // No folder for this one, so it borrows a few photos to keep the private collection walkable
+    images: makeSamples('5', [COLLECTION_1[2], COLLECTION_2[0], COLLECTION_3[3], COLLECTION_1[7], COLLECTION_2[4]]),
   },
 ]
 
