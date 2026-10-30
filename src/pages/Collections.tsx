@@ -7,7 +7,7 @@ import { useLibrary } from '../data/library'
 import type { Collection } from '../data/library'
 import './Collections.css'
 
-const SLIDESHOW_INTERVAL = 5000
+const SLIDESHOW_INTERVAL = 10000
 
 // Individual collection card
 function CollectionCard({ collection }: { collection: Collection }) {

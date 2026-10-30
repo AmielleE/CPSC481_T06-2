@@ -5,14 +5,13 @@ import { useLibrary } from '../data/library'
 import type { LibraryImage } from '../data/library'
 import './Home.css'
 
-const SLIDESHOW_INTERVAL = 5000
+const SLIDESHOW_INTERVAL = 10000
 const FADE_DURATION = 350
 
 type FeaturedImage = {
   image: LibraryImage
   collectionId: string
   collectionName: string
-  isPrivate: boolean
 }
 
 function shuffleImages(total: number, previousLast?: number): number[] {
@@ -38,33 +37,22 @@ function shuffleImages(total: number, previousLast?: number): number[] {
   return indices
 }
 
-function formatAspectRatio(ratio: number) {
-  if (!Number.isFinite(ratio) || ratio <= 0) {
-    return 'Unknown'
-  }
-
-  if (Math.abs(ratio - 1) < 0.05) {
-    return 'Square'
-  }
-
-  return ratio > 1 ? 'Landscape' : 'Portrait'
-}
-
 export default function Home() {
   const { collections } = useLibrary()
 
-  // Gather photographs from all collections.
-  const featuredImages: FeaturedImage[] = collections.flatMap(
-    (collection) =>
+  // Gather photographs from PUBLIC collections only.
+  // Private collections are completely excluded from the slideshow.
+  const featuredImages: FeaturedImage[] = collections
+    .filter((collection) => !collection.isPrivate)
+    .flatMap((collection) =>
       collection.images
         .filter((image) => image.src || image.thumbSrc)
         .map((image) => ({
           image,
           collectionId: collection.id,
           collectionName: collection.name,
-          isPrivate: collection.isPrivate,
         }))
-  )
+    )
 
   // A shuffled playlist, rather than the original collection order.
   const [slideshow, setSlideshow] = useState<{
@@ -77,7 +65,7 @@ export default function Home() {
 
   const [imageVisible, setImageVisible] = useState(true)
 
-  // Rebuild the playlist when the number of photographs changes.
+  // Rebuild the playlist when the number of public photographs changes.
   useEffect(() => {
     setSlideshow({
       order: shuffleImages(featuredImages.length),
@@ -186,31 +174,25 @@ export default function Home() {
                 <div className="home-image-description">
                   <h3>{current.image.title}</h3>
 
-                  <p>
                   {current.image.description?.trim() && (
                     <p>{current.image.description}</p>
                   )}
-                  </p>
                 </div>
 
                 <div className="home-image-details">
-                  <span>
-                    {formatAspectRatio(current.image.aspectRatio)}
-                  </span>
 
-                  {current.image.forSale && (
-                    <span>AVAILABLE FOR PURCHASE</span>
-                  )}
-
-                  {current.isPrivate && (
-                    <span>PRIVATE COLLECTION</span>
-                  )}
-
+                  {/* Counter always stays at the top */}
                   <span className="home-slideshow-counter">
                     {String(slideshow.position + 1).padStart(2, '0')}
                     {' / '}
                     {String(featuredImages.length).padStart(2, '0')}
                   </span>
+
+                  {/* Purchase status appears below the counter */}
+                  {current.image.forSale && (
+                    <span>AVAILABLE FOR PURCHASE</span>
+                  )}
+
                 </div>
               </div>
             </>
@@ -223,7 +205,7 @@ export default function Home() {
               <h1>Your photographs, beautifully organized.</h1>
 
               <p>
-                Create a collection and upload your first
+                Create a public collection and upload your first
                 photographs to get started.
               </p>
 
