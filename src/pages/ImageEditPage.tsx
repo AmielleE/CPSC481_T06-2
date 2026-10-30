@@ -5,6 +5,7 @@ import Layout from '../components/Layout'
 import ViewerImage from '../components/ViewerImage'
 import { useLibrary, type Collection, type LibraryImage } from '../data/library'
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges'
+import './ImagePages.css'
 
 type Draft = { title: string; description: string; forSale: boolean; price: string }
 
@@ -18,6 +19,12 @@ const toDraft = (image: LibraryImage): Draft => ({
 const PRICE_PATTERN = /^\d+(\.\d{1,2})?$/ // dollars with optional cents, e.g. 25 or 25.50
 
 const imagePath = (collectionId: string, imageId: string) => `/collections/${collectionId}/images/${imageId}`
+
+function formatFileSize(bytes?: number) {
+  if (bytes === undefined) return 'Unavailable'
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+}
 
 function ImageEditor({ collection, image }: { collection: Collection; image: LibraryImage }) {
   const { updateImage } = useLibrary()
@@ -69,26 +76,33 @@ function ImageEditor({ collection, image }: { collection: Collection; image: Lib
   return (
     <div className="page">
       <header className="page-header">
-        <h1 className="page-title">
-          <Link to={`/collections/${collection.id}`} className="title-link" title="Back to collection">
-            {collection.name}
+        <div className="header-left">
+          <Link to={`/collections/${collection.id}`} className="btn btn-secondary">
+            ← Back
           </Link>
-        </h1>
+          <h1 className="page-title">{collection.name}</h1>
+        </div>
+
         <div className="action-row">
-          <span className="save-status" role="status">
-            {status}
-          </span>
-          <button type="button" className="btn" disabled={!dirty || !canSave} onClick={saveChanges}>
+          <span className="save-status" role="status">{status}</span>
+          <button
+            type="button"
+            className="btn"
+            disabled={!dirty || !canSave}
+            onClick={saveChanges}
+          >
             Save changes
           </button>
-          {/* Preview sits top-right, where "Exit preview" is, matching the collection page */}
-          <Link to={`/collections/${collection.id}/preview/images/${image.id}`} className="btn btn-secondary">
+          <Link
+            to={`/collections/${collection.id}/preview/images/${image.id}`}
+            className="btn btn-secondary"
+          >
             Preview
           </Link>
         </div>
       </header>
 
-      <div className="viewer">
+      <div className="viewer viewer-centered">
         <button
           type="button"
           className="arrow"
@@ -112,6 +126,15 @@ function ImageEditor({ collection, image }: { collection: Collection; image: Lib
 
       <div className="viewer-info">
         <div className="image-details">
+          <div className="image-metadata">
+            {image.format && <span>{image.format}</span>}
+            {image.width && image.height && (
+              <span>{image.width} × {image.height} px</span>
+            )}
+            {image.fileSize !== undefined && (
+              <span>{formatFileSize(image.fileSize)}</span>
+            )}
+          </div>
           <EditableText
             as="h2"
             className="subtitle-text"

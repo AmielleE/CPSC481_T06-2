@@ -3,9 +3,16 @@ import { Link, useNavigate, useParams } from 'react-router'
 import Layout from '../components/Layout'
 import ViewerImage from '../components/ViewerImage'
 import { useLibrary } from '../data/library'
+import './ImagePages.css'
 
 const imagePath = (collectionId: string, imageId: string) =>
   `/collections/${collectionId}/preview/images/${imageId}`
+
+function formatFileSize(bytes?: number) {
+  if (bytes === undefined) return 'Unavailable'
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+}
 
 export default function ImagePreviewPage() {
   const { collectionId = '', imageId = '' } = useParams()
@@ -44,13 +51,22 @@ export default function ImagePreviewPage() {
     <Layout>
       <div className="page">
         <header className="page-header">
-          <h1 className="page-title">{collection.name}</h1>
-          <Link to={`/collections/${collection.id}/images/${image.id}`} className="btn btn-secondary">
+          <div className="header-left">
+            <Link to={`/collections/${collection.id}/preview`} className="btn btn-secondary">
+              ← Back
+            </Link>
+            <h1 className="page-title">{collection.name}</h1>
+          </div>
+
+          <Link
+            to={`/collections/${collection.id}/images/${image.id}`}
+            className="btn btn-secondary"
+          >
             Exit preview
           </Link>
         </header>
 
-        <div className="viewer">
+        <div className="viewer viewer-centered">
           <button
             type="button"
             className="arrow"
@@ -76,6 +92,15 @@ export default function ImagePreviewPage() {
           <div>
             <h2 className="image-title">{image.title}</h2>
             {image.description && <p className="muted">{image.description}</p>}
+          </div>
+          <div className="image-metadata">
+            {image.format && <span>{image.format}</span>}
+            {image.width && image.height && (
+              <span>{image.width} × {image.height} px</span>
+            )}
+            {image.fileSize !== undefined && (
+              <span>{formatFileSize(image.fileSize)}</span>
+            )}
           </div>
           {image.forSale && image.price !== null && (
             <span className="price">${image.price.toFixed(2)}</span>

@@ -9,6 +9,10 @@ export type LibraryImage = {
   aspectRatio: number // width / height
   forSale: boolean
   price: number | null
+  format?: string
+  width?: number
+  height?: number
+  fileSize?: number
 }
 
 export type Collection = {
@@ -33,10 +37,20 @@ async function makeThumbnail(file: File) {
     canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
     bitmap.close()
     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.85))
-    return { src: fullSrc, thumbSrc: blob ? URL.createObjectURL(blob) : fullSrc, aspectRatio: width / height }
+    return {
+      src: fullSrc,
+      thumbSrc: blob ? URL.createObjectURL(blob) : fullSrc,
+      aspectRatio: width / height,
+      width,
+      height,
+    }
   } catch {
     // Formats the browser can't decode here (e.g. some RAW/HEIC files) fall back to the original
-    return { src: fullSrc, thumbSrc: fullSrc, aspectRatio: 1 }
+    return {
+      src: fullSrc,
+      thumbSrc: fullSrc,
+      aspectRatio: 1,
+    }
   }
 }
 
@@ -97,6 +111,7 @@ function makeSamples(collectionId: string, photos: SamplePhoto[]): LibraryImage[
     aspectRatio,
     forSale: i % 4 === 0,
     price: i % 4 === 0 ? 25 + i * 5 : null,
+    format: 'JPEG',
   }))
 }
 
@@ -165,6 +180,10 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       title: file.name.replace(/\.[^.]+$/, ''),
       description: '',
       ...thumbnails[i],
+      format: file.type.split('/')[1]?.toUpperCase() || file.name.split('.').pop()?.toUpperCase() || 'Unknown',
+      width: thumbnails[i].width,
+      height: thumbnails[i].height,
+      fileSize: file.size,
       forSale: false,
       price: null,
     }))
