@@ -219,10 +219,25 @@ p {
    COLLECTION GRID
 ======================================== */
 
+/* Justified rows: images in a row share a height and take width from their aspect ratio (--ar),
+   then grow together to fill the row, so the gaps stay even whatever the image shapes */
 .image-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  --row-height: 200px;
+
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.25rem;
+}
+
+.image-grid > li {
+  flex: var(--ar, 1) 1 calc(var(--ar, 1) * var(--row-height));
+  min-width: 0;
+}
+
+/* Soaks up the spare space on the last row so a few images there don't stretch huge */
+.image-grid::after {
+  content: '';
+  flex: 1000 1 0;
 }
 
 .tile {
@@ -634,18 +649,13 @@ p {
 }
 
 .thumb {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  aspect-ratio: 1;
+  display: block;
 }
 
 .thumb-frame {
   position: relative;
 
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
 }
 
 .thumb-link {
@@ -941,7 +951,7 @@ p {
 
 @media (max-width: 800px) {
   .image-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    --row-height: 130px;
   }
 
   .page {

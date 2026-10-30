@@ -1,4 +1,4 @@
-import { useState, type KeyboardEvent } from 'react'
+import { useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import Dialog from '../components/Dialog'
 import EditableText from '../components/EditableText'
@@ -143,6 +143,7 @@ function CollectionEditor({ collection }: { collection: Collection }) {
           <li
             key={image.id}
             data-image-id={image.id}
+            style={{ '--ar': image.aspectRatio } as CSSProperties}
             className={[
               'tile-wrap',
               dragId === image.id && 'dragging',

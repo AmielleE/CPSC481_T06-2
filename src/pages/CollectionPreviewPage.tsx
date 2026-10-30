@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Link, useParams } from 'react-router'
 import Layout from '../components/Layout'
 import Thumbnail from '../components/Thumbnail'
@@ -37,7 +38,7 @@ export default function CollectionPreviewPage() {
 
         <ul className="image-grid">
           {collection.images.map((image) => (
-            <li key={image.id}>
+            <li key={image.id} style={{ '--ar': image.aspectRatio } as CSSProperties}>
               <Thumbnail
                 image={image}
                 to={`/collections/${collection.id}/preview/images/${image.id}`}

@@ -101,18 +101,21 @@ const COLLECTION_3: SamplePhoto[] = [
   ['collection3/20241119_0331', LANDSCAPE],
 ]
 
-function makeSamples(collectionId: string, photos: SamplePhoto[]): LibraryImage[] {
-  return photos.map(([path, aspectRatio], i) => ({
-    id: `${collectionId}-img-${i + 1}`,
-    title: path.split('/')[1],
-    description: '',
-    src: sampleUrls[`../assets/images/${path}.jpg`],
-    thumbSrc: sampleUrls[`../assets/images/${path}_thumb.jpg`],
-    aspectRatio,
-    forSale: i % 4 === 0,
-    price: i % 4 === 0 ? 25 + i * 5 : null,
-    format: 'JPEG',
-  }))
+// Every 4th photo is for sale; borrowed photos pass sell = false so a photo isn't listed twice
+function makeSamples(collectionId: string, photos: SamplePhoto[], sell = true): LibraryImage[] {
+  return photos.map(([path, aspectRatio], i) => {
+    const forSale = sell && i % 4 === 0
+    return {
+      id: `${collectionId}-img-${i + 1}`,
+      title: path.split('/')[1],
+      description: '',
+      src: sampleUrls[`../assets/images/${path}.jpg`],
+      thumbSrc: sampleUrls[`../assets/images/${path}_thumb.jpg`],
+      aspectRatio,
+      forSale,
+      price: forSale ? 25 + i * 5 : null,
+    }
+  })
 }
 
 // IDs and names match the "All Collections" page (src/pages/Collections.tsx) so its cards open these
@@ -151,13 +154,14 @@ const initialCollections: Collection[] = [
     info: '',
     isPrivate: true,
     // No folder for this one, so it borrows a few photos to keep the private collection walkable
-    images: makeSamples('5', [COLLECTION_1[2], COLLECTION_2[0], COLLECTION_3[3], COLLECTION_1[7], COLLECTION_2[4]]),
+    images: makeSamples('5', [COLLECTION_1[2], COLLECTION_2[0], COLLECTION_3[3], COLLECTION_1[7], COLLECTION_2[4]], false),
   },
 ]
 
 type LibraryContextValue = {
   collections: Collection[]
   getCollection: (id: string) => Collection | undefined
+  addCollection: (name: string, isPrivate: boolean) => void
   addImages: (collectionId: string, files: File[]) => Promise<void>
   updateCollection: (collectionId: string, changes: Partial<Omit<Collection, 'id'>>) => void
   deleteCollection: (collectionId: string) => void
@@ -170,6 +174,18 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [collections, setCollections] = useState<Collection[]>(initialCollections)
 
   const getCollection = (id: string) => collections.find((c) => c.id === id)
+
+  const addCollection = (name: string, isPrivate: boolean) => {
+    const newCollection: Collection = {
+      id: Date.now().toString(),
+      name,
+      info: '',
+      isPrivate,
+      images: [],
+    }
+  
+    setCollections((prev) => [...prev, newCollection])
+  }
 
   // Thumbnails are generated in the background; the images appear once they're ready
   const addImages = async (collectionId: string, files: File[]) => {
@@ -212,7 +228,15 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
 
   return (
     <LibraryContext.Provider
-      value={{ collections, getCollection, addImages, updateCollection, deleteCollection, updateImage }}
+      value={{
+        collections,
+        getCollection,
+        addCollection,
+        addImages,
+        updateCollection,
+        deleteCollection,
+        updateImage,
+      }}    
     >
       {children}
     </LibraryContext.Provider>

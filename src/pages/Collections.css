@@ -17,8 +17,8 @@
 
 .collections-header {
   width: 100%;
-  max-width: 980px;
-  margin: 0 auto 65px;
+  max-width: 1100px;
+  margin: 0 auto 55px;
 }
 
 .collections-title {
@@ -27,217 +27,185 @@
   font-weight: 400;
   line-height: 1.2;
   color: var(--color-text);
-  margin: 0 0 12px;
-}
-
-.collections-subtitle {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: var(--color-text-muted);
   margin: 0;
 }
 
 /* ========================================
-   COLLECTIONS GRID
+   COLLECTION GRID
 ======================================== */
 
-.collections-grid {
+.collections-photo-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  column-gap: 45px;
-  row-gap: 65px;
+  gap: 55px 35px;
   width: 100%;
-  max-width: 980px;
+  max-width: 1100px;
   margin: 0 auto;
-  justify-items: start;
   align-items: start;
 }
 
 /* ========================================
-   COLLECTION CARD
+   COLLECTION PHOTO CARD
 ======================================== */
 
-.collection-card {
+.collection-photo-card {
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  color: var(--color-text);
   text-decoration: none;
-  cursor: pointer;
-  transition: transform 0.25s ease;
+  color: var(--color-text);
 }
 
-.collection-card:hover {
-  transform: translateY(-5px);
-}
-
-.collection-card:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 8px;
-}
-
-/* ========================================
-   STACKED COLLECTION DESIGN
-======================================== */
-
-.collection-stack {
+.collection-photo-preview {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
-  padding: 0 18px 18px 0;
-  box-sizing: border-box;
-}
-
-.collection-stack-back,
-.collection-stack-middle,
-.collection-stack-front {
-  position: absolute;
-  width: calc(100% - 18px);
-  height: calc(100% - 18px);
-  border: 1px solid var(--color-text);
-  box-sizing: border-box;
-}
-
-/* Back layer */
-.collection-stack-back {
-  top: 0;
-  left: 18px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
   background-color: #e9e4db;
 }
 
-/* Middle layer */
-.collection-stack-middle {
-  top: 9px;
-  left: 9px;
-  background-color: #f5f2ec;
+/* Collection image */
+.collection-preview-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    opacity 0.3s ease,
+    transform 0.4s ease;
 }
 
-/* Front layer */
-.collection-stack-front {
-  top: 18px;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 20px;
-  background-color: #faf9f6;
-  text-align: center;
-}
-
-/* ========================================
-   COLLECTION NAME
-======================================== */
-
-.collection-name {
-  font-family: var(--font-heading);
-  font-size: clamp(19px, 2vw, 25px);
-  font-weight: 400;
-  line-height: 1.3;
-  color: var(--color-text);
-  overflow-wrap: anywhere;
-}
-
-/* ========================================
-   PRIVATE COLLECTIONS
-======================================== */
-
-.collection-card.private {
+.collection-preview-image.visible {
   opacity: 1;
 }
 
-.collection-card.private .collection-stack-back {
-  background-color: #c9b9a7;
-  border-color: #77685c;
+.collection-preview-image.hidden {
+  opacity: 0;
 }
 
-.collection-card.private .collection-stack-middle {
-  background-color: #ded1c1;
-  border-color: #77685c;
+.collection-photo-card:hover .collection-preview-image {
+  transform: scale(1.03);
 }
 
-.collection-card.private .collection-stack-front {
-  background-color: #eae0d3;
-  border-color: #77685c;
-}
+/* ========================================
+   EMPTY COLLECTION
+======================================== */
 
-.collection-lock-icon {
-  width: 26px;
-  height: 26px;
-  color: #77685c;
-  flex-shrink: 0;
-}
-
-.collection-private-indicator {
+.collection-photo-placeholder {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
   width: 100%;
+  height: 100%;
+  background-color: #f1eee8;
 }
 
-.private-divider {
-  display: block;
-  width: 35px;
-  height: 1px;
-  background-color: #b3a18e;
+.collection-photo-placeholder span {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: var(--color-text-muted);
 }
 
-.private-label {
+/* ========================================
+   PRIVATE COLLECTION BADGE
+======================================== */
+
+.collection-photo-private-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 9px 12px;
+
+  background-color: rgba(48, 42, 42, 0.9);
+  color: #f3f0e8;
+
   font-family: var(--font-body);
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+}
+
+/* ========================================
+   COLLECTION DETAILS
+======================================== */
+
+.collection-photo-details {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 18px;
+}
+
+.collection-photo-details h2 {
+  font-family: var(--font-heading);
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.collection-photo-count {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
   letter-spacing: 1.5px;
-  line-height: 1.4;
-  color: #77685c;
+  color: var(--color-text-muted);
 }
 
 /* ========================================
    ADD COLLECTION CARD
 ======================================== */
 
-.add-collection-card {
-  font-family: var(--font-body);
+.collection-photo-add {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
 }
 
-.add-collection-card .collection-stack-back {
-  background-color: #e8dfd5;
-  border-color: var(--color-accent);
-}
-
-.add-collection-card .collection-stack-middle {
-  background-color: #f1ebe3;
-  border-color: var(--color-accent);
-}
-
-.add-collection-card .collection-stack-front {
-  background-color: #f8f4ee;
-  border-color: var(--color-accent);
-}
-
-.add-icon {
-  font-family: var(--font-heading);
-  font-size: 58px;
-  font-weight: 300;
-  line-height: 1;
+.collection-photo-add-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border: 1px dashed var(--color-border);
+  background-color: #faf9f6;
   color: var(--color-accent);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.add-collection-label {
+.collection-photo-add:hover .collection-photo-add-preview {
+  background-color: var(--color-sidebar);
+  border-color: var(--color-accent);
+}
+
+.collection-photo-add-preview span {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 1.5px;
-  color: var(--color-accent);
+}
+
+.collection-photo-add .collection-photo-details h2 {
+  color: var(--color-text);
 }
 
 /* ========================================
@@ -461,15 +429,14 @@
     padding: 55px 40px 70px;
   }
 
-  .collections-grid {
+  .collections-photo-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 45px;
-    row-gap: 55px;
-    max-width: 650px;
+    max-width: 750px;
+    gap: 45px 30px;
   }
 
   .collections-header {
-    max-width: 650px;
+    max-width: 750px;
   }
 }
 
@@ -482,15 +449,15 @@
     font-size: 34px;
   }
 
-  .collections-header {
-    margin-bottom: 45px;
-    max-width: 300px;
+  .collections-photo-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    gap: 40px;
   }
 
-  .collections-grid {
-    grid-template-columns: 1fr;
-    max-width: 300px;
-    row-gap: 45px;
+  .collections-header {
+    max-width: 400px;
+    margin-bottom: 40px;
   }
 }
 
@@ -503,8 +470,8 @@
     font-size: 28px;
   }
 
-  .collections-subtitle {
-    font-size: 12px;
+  .collection-photo-details h2 {
+    font-size: 22px;
   }
 
   .collection-modal {
