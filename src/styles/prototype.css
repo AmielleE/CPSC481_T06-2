@@ -18,13 +18,68 @@ h1, h2, p { margin: 0; }
 ul { list-style: none; margin: 0; padding: 0; }
 
 /* Layout */
-.app-shell { display: grid; grid-template-columns: 96px 1fr; min-height: 100vh; }
-.sidebar { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding-top: 1.5rem; background: var(--sidebar); }
-/* Keep the sidebar on screen while the page scrolls */
-.sidebar { position: sticky; top: 0; align-self: flex-start; height: 100vh; overflow-y: auto; }
-.sidebar-link { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; color: #fff; text-decoration: none; font-size: 0.7rem; opacity: 0.85; }
-.sidebar-link:hover, .sidebar-link.active { opacity: 1; }
-.main { min-width: 0; }
+.app-shell {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  min-height: 100vh;
+}
+
+/* Shared sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+
+  padding: 1.5rem 0;
+  background: var(--sidebar);
+
+  /* Keep sidebar visible while scrolling */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Main navigation links */
+.sidebar-navigation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Sidebar links */
+.sidebar-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+
+/* Sidebar hover and active states */
+.sidebar-link:hover,
+.sidebar-link.active {
+  opacity: 1;
+}
+
+/* Logout button at bottom */
+.sidebar-logout {
+  margin-top: auto;
+}
+
+/* Main content */
+.main {
+  min-width: 0;
+}
+
 .page { padding: 1.75rem 2.5rem; }
 .page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
 .page-title { font-size: 1.75rem; font-weight: 600; }

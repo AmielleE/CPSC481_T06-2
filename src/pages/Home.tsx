@@ -8,77 +8,82 @@ export default function Home() {
       {/* Left sidebar */}
       <aside className="home-sidebar">
 
-        {/* Photographer name */}
-        <h2>John Doe</h2>
+        {/* Centered sidebar content */}
+        <div className="home-sidebar-content">
 
-        {/* Sidebar navigation */}
-        <nav className="home-navigation">
+          {/* Photographer name */}
+          <h2>John Doe</h2>
 
-          {/* Collections */}
-          <Link to="/collections" className="home-nav-button">
-            <svg
-              viewBox="0 0 24 24"
-              width="26"
-              height="26"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M3 6h6l2 2h10v11H3z" />
-            </svg>
+          {/* Sidebar navigation */}
+          <nav className="home-navigation">
 
-            <span>Collections</span>
-          </Link>
+            {/* Collections */}
+            <Link to="/collections" className="home-nav-button">
+              <svg
+                viewBox="0 0 24 24"
+                width="26"
+                height="26"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 6h6l2 2h10v11H3z" />
+              </svg>
 
-          {/* Images for Purchase */}
-          <Link to="/purchasing" className="home-nav-button">
-            <svg
-              viewBox="0 0 24 24"
-              width="26"
-              height="26"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M3 4h2l2 11h11l2-8H6M9 20h.01M17 20h.01" />
-            </svg>
+              <span>Collections</span>
+            </Link>
 
-            <span>Images for Purchase</span>
-          </Link>
+            {/* Purchase */}
+            <Link to="/purchasing" className="home-nav-button">
+              <svg
+                viewBox="0 0 24 24"
+                width="26"
+                height="26"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 4h2l2 11h11l2-8H6M9 20h.01M17 20h.01" />
+              </svg>
 
-        </nav>
+              <span>Purchase</span>
+            </Link>
+
+          </nav>
+
+        </div>
+
+        {/* Logout button at bottom of sidebar */}
+        <Link to="/login" className="home-logout-button">
+          <svg
+            viewBox="0 0 24 24"
+            width="26"
+            height="26"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M10 17l5-5-5-5" />
+            <path d="M15 12H3" />
+            <path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7" />
+          </svg>
+
+          <span>Logout</span>
+        </Link>
+
       </aside>
 
       {/* Main content */}
       <main className="home-content">
-
-        {/* Login button */}
-        <div className="home-header">
-          <Link to="/login" className="home-login">
-            <svg
-              viewBox="0 0 24 24"
-              width="28"
-              height="28"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="7" r="4" />
-              <path d="M4 21v-2a8 8 0 0 1 16 0v2" />
-            </svg>
-
-            Login
-          </Link>
-        </div>
 
         {/* Collection preview */}
         <section className="home-collection">
