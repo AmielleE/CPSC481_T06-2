@@ -23,6 +23,12 @@
   white-space: nowrap;
 }
 
+/* Read-only price on the customer preview, in the spot the price box takes on the edit page */
+.sale-price {
+  flex: 0 0 auto;
+  font-size: 0.9rem;
+}
+
 .sale-caption .price-input {
   flex: 0 0 auto;
   width: 5.5rem;
@@ -33,4 +39,130 @@
 .sale-item .field-error {
   max-width: none;
   text-align: right;
+}
+
+/* Two sections: images for sale first, then the rest grouped under their collection names */
+.purchase-section + .purchase-section {
+  margin-top: 2.5rem;
+}
+
+.section-heading {
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.purchase-group + .purchase-group {
+  margin-top: 1.75rem;
+}
+
+.group-heading {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* One row per collection that scrolls sideways, so long collections don't stretch the page.
+   Each image keeps the grid's row height and takes its width from its aspect ratio (--ar) */
+.scroll-row {
+  --row-height: 200px;
+
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  /* Room for the hover outline and the scrollbar */
+  padding: 3px 3px 0.75rem;
+}
+
+/* Thin scrollbar that only shows while the collection is hovered or has keyboard focus.
+   The bar keeps its space when hidden so the row doesn't jump */
+.scroll-row {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.purchase-group:hover .scroll-row,
+.purchase-group:focus-within .scroll-row {
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Safari ignores scrollbar-color, so it gets the same look through the WebKit pseudo-elements */
+.scroll-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll-row::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: transparent;
+}
+
+.purchase-group:hover .scroll-row::-webkit-scrollbar-thumb,
+.purchase-group:focus-within .scroll-row::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+.scroll-row > li {
+  flex: 0 0 calc(var(--ar, 1) * var(--row-height));
+  min-width: 0;
+}
+
+@media (max-width: 800px) {
+  .scroll-row {
+    --row-height: 130px;
+  }
+}
+
+/* Header buttons: status | Save changes | Preview, then View sales history under both buttons */
+.purchase-actions {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.purchase-actions .btn {
+  text-align: center;
+}
+
+.purchase-history-btn {
+  grid-column: 2 / -1;
+}
+
+@media (max-width: 800px) {
+  .purchase-actions {
+    justify-content: start;
+  }
+}
+
+.section-hint {
+  margin: -0.5rem 0 1rem;
+  font-size: 0.85rem;
+}
+
+/* Label over a not-for-sale image while it's hovered or focused, saying what a click does */
+.add-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgb(48 42 42 / 0.55);
+  color: #fff;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+
+  opacity: 0;
+  pointer-events: none; /* clicks go through to the image button underneath */
+  transition: opacity 0.15s ease;
+}
+
+.thumb-frame:hover .add-overlay,
+.thumb-frame:has(.thumb-button:focus-visible) .add-overlay {
+  opacity: 1;
 }

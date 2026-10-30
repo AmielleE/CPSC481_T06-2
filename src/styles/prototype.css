@@ -674,6 +674,16 @@ p {
   outline: 2px solid var(--color-accent);
 }
 
+.thumb-button {
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+
+.thumb-static:hover {
+  outline: none;
+}
+
 .thumb-link img {
   display: block;
 

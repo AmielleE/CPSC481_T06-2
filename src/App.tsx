@@ -11,6 +11,7 @@ import ImageEditPage from './pages/ImageEditPage'
 import ImagePreviewPage from './pages/ImagePreviewPage'
 import UploadImagesPage from './pages/UploadImagesPage'
 import PurchasingPage from './pages/PurchasingPage'
+import PurchasingPreviewPage from './pages/PurchasingPreviewPage'
 import PurchaseHistoryPage from './pages/PurchaseHistoryPage'
 
 function About() {
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/purchasing" element={<PurchasingPage />} />
+        <Route path="/purchasing/preview" element={<PurchasingPreviewPage />} />
         <Route path="/purchasing/history" element={<PurchaseHistoryPage />} />
 
         {/* Collections page */}

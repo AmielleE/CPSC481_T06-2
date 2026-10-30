@@ -120,7 +120,7 @@ export default function PurchaseHistoryPage() {
 
         {/* Page heading */}
         <header className="purchase-history-header">
-          <h1>Purchase History</h1>
+          <h1>Sales History</h1>
         </header>
 
         {/* Sales overview */}
