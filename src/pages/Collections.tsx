@@ -40,7 +40,7 @@ function CollectionCard({ collection }: { collection: Collection }) {
 
   return (
     <Link
-      to={`/collections/${collection.id}/preview`}
+      to={`/collections/${collection.id}`}
       className={`collection-photo-card ${
         collection.isPrivate ? 'private' : ''
       }`}
