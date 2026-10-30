@@ -147,6 +147,7 @@ const initialCollections: Collection[] = [
 type LibraryContextValue = {
   collections: Collection[]
   getCollection: (id: string) => Collection | undefined
+  addCollection: (name: string, isPrivate: boolean) => void
   addImages: (collectionId: string, files: File[]) => Promise<void>
   updateCollection: (collectionId: string, changes: Partial<Omit<Collection, 'id'>>) => void
   deleteCollection: (collectionId: string) => void
@@ -159,6 +160,18 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
   const [collections, setCollections] = useState<Collection[]>(initialCollections)
 
   const getCollection = (id: string) => collections.find((c) => c.id === id)
+
+  const addCollection = (name: string, isPrivate: boolean) => {
+    const newCollection: Collection = {
+      id: Date.now().toString(),
+      name,
+      info: '',
+      isPrivate,
+      images: [],
+    }
+  
+    setCollections((prev) => [...prev, newCollection])
+  }
 
   // Thumbnails are generated in the background; the images appear once they're ready
   const addImages = async (collectionId: string, files: File[]) => {
@@ -197,7 +210,15 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
 
   return (
     <LibraryContext.Provider
-      value={{ collections, getCollection, addImages, updateCollection, deleteCollection, updateImage }}
+      value={{
+        collections,
+        getCollection,
+        addCollection,
+        addImages,
+        updateCollection,
+        deleteCollection,
+        updateImage,
+      }}    
     >
       {children}
     </LibraryContext.Provider>

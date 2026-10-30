@@ -1,40 +1,107 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router'
+import { Lock, Plus, Info } from 'lucide-react'
 import Layout from '../components/Layout'
+import { useLibrary } from '../data/library'
+import type { Collection } from '../data/library'
 import './Collections.css'
 
-type Collection = {
-  id: number
-  name: string
-  isPrivate: boolean
+const SLIDESHOW_INTERVAL = 5000
+
+// Individual collection card
+function CollectionCard({ collection }: { collection: Collection }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [imageVisible, setImageVisible] = useState(true)
+
+  const images = collection.images.filter(
+    (image) => image.thumbSrc || image.src
+  )
+
+  useEffect(() => {
+    if (images.length <= 1) return
+
+    const interval = window.setInterval(() => {
+      setImageVisible(false)
+
+      window.setTimeout(() => {
+        setCurrentImageIndex((previous) =>
+          (previous + 1) % images.length
+        )
+
+        setImageVisible(true)
+      }, 300)
+    }, SLIDESHOW_INTERVAL)
+
+    return () => window.clearInterval(interval)
+  }, [images.length])
+
+  const currentImage = images[currentImageIndex]
+
+  return (
+    <Link
+      to={`/collections/${collection.id}/preview`}
+      className={`collection-photo-card ${
+        collection.isPrivate ? 'private' : ''
+      }`}
+    >
+      <div className="collection-photo-preview">
+
+        {currentImage ? (
+          <img
+            src={currentImage.thumbSrc || currentImage.src || ''}
+            alt={`${collection.name} collection preview`}
+            className={`collection-preview-image ${
+              imageVisible ? 'visible' : 'hidden'
+            }`}
+          />
+        ) : (
+          <div className="collection-photo-placeholder">
+            <span>NO IMAGES YET</span>
+          </div>
+        )}
+
+        {/* Private collection badge */}
+        {collection.isPrivate && (
+          <div className="collection-photo-private-badge">
+            <Lock size={13} strokeWidth={1.5} />
+            <span>PRIVATE</span>
+          </div>
+        )}
+
+      </div>
+
+      <div className="collection-photo-details">
+
+        <h2>{collection.name}</h2>
+
+        <span className="collection-photo-count">
+          {collection.images.length}{' '}
+          {collection.images.length === 1
+            ? 'PHOTOGRAPH'
+            : 'PHOTOGRAPHS'}
+        </span>
+
+      </div>
+    </Link>
+  )
 }
 
 export default function Collections() {
-  const [collections, setCollections] = useState<Collection[]>([
-    { id: 1, name: 'Spain/Portugal', isPrivate: false },
-    { id: 2, name: 'Alberta', isPrivate: false },
-    { id: 3, name: 'Patagonia', isPrivate: false },
-    { id: 4, name: 'Collection 4', isPrivate: false },
-    { id: 5, name: 'Collection 5', isPrivate: true },
-  ])
+  const { collections, addCollection } = useLibrary()
 
   const [showForm, setShowForm] = useState(false)
   const [newName, setNewName] = useState('')
   const [isPrivate, setIsPrivate] = useState(false)
 
-  function addCollection(event: FormEvent<HTMLFormElement>) {
+  function handleAddCollection(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!newName.trim()) return
+    const name = newName.trim()
 
-    const newCollection: Collection = {
-      id: Date.now(),
-      name: newName.trim(),
-      isPrivate,
-    }
+    if (!name) return
 
-    setCollections([...collections, newCollection])
+    addCollection(name, isPrivate)
 
     setNewName('')
     setIsPrivate(false)
@@ -49,109 +116,44 @@ export default function Collections() {
 
   return (
     <Layout>
-      <div className="collections-page">
+      <section className="collections-page">
 
-        {/* Page heading */}
+        {/* Page header */}
         <header className="collections-header">
           <h1 className="collections-title">
             All Collections
           </h1>
         </header>
 
-        {/* Collections grid */}
-        <div className="collections-grid">
+        {/* Collection cards */}
+        <div className="collections-photo-grid">
 
           {collections.map((collection) => (
-            <Link
+            <CollectionCard
               key={collection.id}
-              to={`/collections/${collection.id}/preview`}
-              className={`collection-card ${
-                collection.isPrivate ? 'private' : ''
-              }`}
-            >
-              <div className="collection-stack">
-
-                {/* Back layer */}
-                <div className="collection-stack-back" />
-
-                {/* Middle layer */}
-                <div className="collection-stack-middle" />
-
-                {/* Front layer */}
-                <div className="collection-stack-front">
-
-                  {collection.isPrivate && (
-                    <svg
-                      className="collection-lock-icon"
-                      viewBox="0 0 24 24"
-                      width="26"
-                      height="26"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <rect
-                        x="5"
-                        y="10"
-                        width="14"
-                        height="11"
-                        rx="1"
-                      />
-                      <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-                    </svg>
-                  )}
-
-                  <span className="collection-name">
-                    {collection.name}
-                  </span>
-
-                  {collection.isPrivate && (
-                    <div className="collection-private-indicator">
-                      <span className="private-divider" />
-                      <span className="private-label">
-                        PRIVATE COLLECTION
-                      </span>
-                    </div>
-                  )}
-
-                </div>
-
-              </div>
-            </Link>
+              collection={collection}
+            />
           ))}
 
-          {/* Add collection card */}
+          {/* Add collection */}
           <button
             type="button"
-            className="collection-card add-collection-card"
+            className="collection-photo-add"
             onClick={() => setShowForm(true)}
-            aria-label="Add a new collection"
           >
-            <div className="collection-stack">
+            <div className="collection-photo-add-preview">
+              <Plus size={42} strokeWidth={1} />
+              <span>ADD COLLECTION</span>
+            </div>
 
-              <div className="collection-stack-back" />
-
-              <div className="collection-stack-middle" />
-
-              <div className="collection-stack-front">
-
-                <span className="add-icon">+</span>
-
-                <span className="add-collection-label">
-                  ADD COLLECTION
-                </span>
-
-              </div>
-
+            <div className="collection-photo-details">
+              <h2>New Collection</h2>
             </div>
           </button>
 
         </div>
 
-        {/* Add collection modal */}
+        {/* Create collection modal */}
         {showForm && (
           <div
             className="collection-modal-overlay"
@@ -176,9 +178,8 @@ export default function Collections() {
                 Create a new space for your photographs.
               </p>
 
-              <form onSubmit={addCollection}>
+              <form onSubmit={handleAddCollection}>
 
-                {/* Collection name */}
                 <div className="collection-form-field">
                   <label htmlFor="collection-name">
                     COLLECTION NAME
@@ -197,7 +198,6 @@ export default function Collections() {
                   />
                 </div>
 
-                {/* Privacy setting */}
                 <div className="collection-privacy-section">
 
                   <label className="collection-checkbox">
@@ -207,39 +207,21 @@ export default function Collections() {
                       onChange={(event) =>
                         setIsPrivate(event.target.checked)
                       }
-                      aria-describedby={
-                        isPrivate
-                          ? 'collection-privacy-info'
-                          : undefined
-                      }
                     />
 
                     <span>Make this collection private</span>
                   </label>
 
-                  {/* Privacy explanation */}
                   {isPrivate && (
                     <div
                       className="collection-privacy-info"
-                      id="collection-privacy-info"
                       role="status"
                     >
-                      <svg
+                      <Info
+                        size={20}
+                        strokeWidth={1.5}
                         className="collection-info-icon"
-                        viewBox="0 0 24 24"
-                        width="20"
-                        height="20"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <circle cx="12" cy="12" r="9" />
-                        <path d="M12 11v5" />
-                        <path d="M12 8h.01" />
-                      </svg>
+                      />
 
                       <div className="collection-privacy-info-text">
                         <h3>About private collections</h3>
@@ -256,7 +238,6 @@ export default function Collections() {
 
                 </div>
 
-                {/* Modal buttons */}
                 <div className="collection-modal-buttons">
 
                   <button
@@ -282,7 +263,7 @@ export default function Collections() {
           </div>
         )}
 
-      </div>
+      </section>
     </Layout>
   )
 }
