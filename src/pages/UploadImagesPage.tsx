@@ -4,8 +4,10 @@ import {
   type ChangeEvent,
   type DragEvent,
 } from 'react'
+
 import { ArrowLeft, ImagePlus, X, Check } from 'lucide-react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
+
 import Layout from '../components/Layout'
 import { useLibrary } from '../data/library'
 import './UploadImages.css'
@@ -22,7 +24,8 @@ export default function UploadImagesPage() {
   const { collectionId = '' } = useParams()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { getCollection, addImages } = useLibrary()
+
+  const { getCollection, addImages, deleteCollection } = useLibrary()
 
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -33,10 +36,16 @@ export default function UploadImagesPage() {
 
   const collection = getCollection(collectionId)
 
-  const cancelTarget =
-    searchParams.get('new') === 'true'
-      ? '/collections'
-      : `/collections/${collectionId}`
+  // Identify whether this is a newly created collection.
+  const isNewCollection = searchParams.get('new') === 'true'
+
+  const cancelTarget = isNewCollection
+    ? '/collections'
+    : `/collections/${collectionId}`
+
+  // ========================================
+  // FILE HANDLING
+  // ========================================
 
   function handleFiles(list: FileList | null) {
     if (!list) return
@@ -73,6 +82,10 @@ export default function UploadImagesPage() {
     setFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
+  // ========================================
+  // FINISH UPLOADING
+  // ========================================
+
   async function onFinish() {
     if (files.length === 0 || processing) return
 
@@ -80,23 +93,59 @@ export default function UploadImagesPage() {
 
     try {
       await addImages(collectionId, files)
+
+      // Images have been saved, so keep the collection.
       navigate(`/collections/${collectionId}`)
     } catch {
-      setErrors(['Unable to upload images. Please try again.'])
+      setErrors([
+        'Unable to upload images. Please try again.',
+      ])
+
       setProcessing(false)
     }
   }
+
+  // ========================================
+  // CANCEL UPLOADING
+  // ========================================
+
+  function handleCancel() {
+    if (processing) return
+
+    // Only delete newly created collections that are still empty.
+    // Existing collections must never be deleted here.
+    if (
+      isNewCollection &&
+      collection &&
+      collection.images.length === 0
+    ) {
+      deleteCollection(collectionId)
+    }
+
+    navigate(cancelTarget)
+  }
+
+  // ========================================
+  // COLLECTION NOT FOUND
+  // ========================================
 
   if (!collection) {
     return (
       <Layout>
         <div className="upload-images-page">
           <p>Collection not found.</p>
-          <Link to="/collections">Back to collections</Link>
+
+          <Link to="/collections">
+            Back to collections
+          </Link>
         </div>
       </Layout>
     )
   }
+
+  // ========================================
+  // PAGE
+  // ========================================
 
   return (
     <Layout>
@@ -105,13 +154,20 @@ export default function UploadImagesPage() {
         <div className="upload-images-container">
 
           {/* Back navigation */}
-          <Link
-            to={cancelTarget}
+          <button
+            type="button"
             className="upload-images-back"
+            onClick={handleCancel}
+            disabled={processing}
           >
             <ArrowLeft size={18} aria-hidden="true" />
-            <span>BACK TO COLLECTION</span>
-          </Link>
+
+            <span>
+              {isNewCollection
+                ? 'BACK TO ALL COLLECTIONS'
+                : 'BACK TO COLLECTION'}
+            </span>
+          </button>
 
           {/* Page heading */}
           <header className="upload-images-header">
@@ -254,7 +310,7 @@ export default function UploadImagesPage() {
               <button
                 type="button"
                 className="upload-images-cancel"
-                onClick={() => navigate(cancelTarget)}
+                onClick={handleCancel}
                 disabled={processing}
               >
                 CANCEL

@@ -500,3 +500,85 @@
     font-size: 12px;
   }
 }
+
+/* ========================================
+   COLLECTIONS PREVIEW MODE
+======================================== */
+
+.collections-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Preview / Exit Preview button */
+.collections-preview-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 20px;
+
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0;
+
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1.2px;
+
+  color: var(--color-text);
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.collections-preview-button:hover {
+  background-color: var(--color-sidebar);
+  border-color: var(--color-text);
+}
+
+.collections-preview-button.active {
+  background-color: var(--color-text);
+  border-color: var(--color-text);
+  color: #ffffff;
+}
+
+.collections-preview-button.active:hover {
+  background-color: #514644;
+}
+
+/* Empty preview state */
+.collections-preview-empty {
+  width: 100%;
+  max-width: 1100px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+.collections-preview-empty p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .collections-header {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .collections-preview-button {
+    padding: 10px 12px;
+    font-size: 10px;
+    gap: 6px;
+  }
+}

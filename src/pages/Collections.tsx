@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { Lock, Plus, Info } from 'lucide-react'
 import Layout from '../components/Layout'
 import { useLibrary } from '../data/library'
@@ -61,7 +61,6 @@ function CollectionCard({ collection }: { collection: Collection }) {
           </div>
         )}
 
-        {/* Private collection badge */}
         {collection.isPrivate && (
           <div className="collection-photo-private-badge">
             <Lock size={13} strokeWidth={1.5} />
@@ -88,11 +87,18 @@ function CollectionCard({ collection }: { collection: Collection }) {
 }
 
 export default function Collections() {
+  const navigate = useNavigate()
   const { collections, addCollection } = useLibrary()
 
   const [showForm, setShowForm] = useState(false)
   const [newName, setNewName] = useState('')
   const [isPrivate, setIsPrivate] = useState(false)
+  const [isPreview, setIsPreview] = useState(false)
+
+  // Only show public collections in preview mode
+  const visibleCollections = isPreview
+    ? collections.filter((collection) => !collection.isPrivate)
+    : collections
 
   function handleAddCollection(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -101,11 +107,14 @@ export default function Collections() {
 
     if (!name) return
 
-    addCollection(name, isPrivate)
+    const newCollection = addCollection(name, isPrivate)
 
     setNewName('')
     setIsPrivate(false)
     setShowForm(false)
+
+    // Go directly to the upload page for the new collection
+    navigate(`/collections/${newCollection.id}/upload?new=true`)
   }
 
   function closeForm() {
@@ -120,38 +129,59 @@ export default function Collections() {
 
         {/* Page header */}
         <header className="collections-header">
+
           <h1 className="collections-title">
             All Collections
           </h1>
+
+          <button
+            type="button"
+            className={`collections-preview-button ${
+              isPreview ? 'active' : ''
+            }`}
+            onClick={() => setIsPreview((previous) => !previous)}
+          >
+            {isPreview ? 'EXIT PREVIEW' : 'PREVIEW'}
+          </button>
+
         </header>
 
         {/* Collection cards */}
         <div className="collections-photo-grid">
 
-          {collections.map((collection) => (
+          {visibleCollections.map((collection) => (
             <CollectionCard
               key={collection.id}
               collection={collection}
             />
           ))}
 
-          {/* Add collection */}
-          <button
-            type="button"
-            className="collection-photo-add"
-            onClick={() => setShowForm(true)}
-          >
-            <div className="collection-photo-add-preview">
-              <Plus size={42} strokeWidth={1} />
-              <span>ADD COLLECTION</span>
-            </div>
+          {/* Add collection - hidden in preview mode */}
+          {!isPreview && (
+            <button
+              type="button"
+              className="collection-photo-add"
+              onClick={() => setShowForm(true)}
+            >
+              <div className="collection-photo-add-preview">
+                <Plus size={42} strokeWidth={1} />
+                <span>ADD COLLECTION</span>
+              </div>
 
-            <div className="collection-photo-details">
-              <h2>New Collection</h2>
-            </div>
-          </button>
+              <div className="collection-photo-details">
+                <h2>New Collection</h2>
+              </div>
+            </button>
+          )}
 
         </div>
+
+        {/* Empty preview state */}
+        {isPreview && visibleCollections.length === 0 && (
+          <div className="collections-preview-empty">
+            <p>No public collections to display.</p>
+          </div>
+        )}
 
         {/* Create collection modal */}
         {showForm && (

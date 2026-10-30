@@ -1,11 +1,17 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useState,
+  type ReactNode,
+} from 'react'
 
 export type LibraryImage = {
   id: string
   title: string
   description: string
   src: string | null // null = grey placeholder tile
-  thumbSrc: string | null // small copy used in grids; full-size images are slow to repaint
+  thumbSrc: string | null // small copy used in grids
   aspectRatio: number // width / height
   forSale: boolean
   price: number | null
@@ -23,20 +29,36 @@ export type Collection = {
   images: LibraryImage[]
 }
 
-const THUMB_SIZE = 480 // px on the longest side; sharp enough for grid tiles on high-DPI screens
-// When you add large images to the library it slows down the UI quite a lot so we are making thumbnails for images.
+const THUMB_SIZE = 480
+
+// Generate smaller thumbnails so large images don't slow down the UI.
 async function makeThumbnail(file: File) {
   const fullSrc = URL.createObjectURL(file)
+
   try {
     const bitmap = await createImageBitmap(file)
     const { width, height } = bitmap
-    const scale = Math.min(1, THUMB_SIZE / Math.max(width, height))
+
+    const scale = Math.min(
+      1,
+      THUMB_SIZE / Math.max(width, height)
+    )
+
     const canvas = document.createElement('canvas')
+
     canvas.width = Math.round(width * scale)
     canvas.height = Math.round(height * scale)
-    canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+
+    canvas
+      .getContext('2d')!
+      .drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+
     bitmap.close()
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.85))
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, 'image/webp', 0.85)
+    )
+
     return {
       src: fullSrc,
       thumbSrc: blob ? URL.createObjectURL(blob) : fullSrc,
@@ -45,7 +67,7 @@ async function makeThumbnail(file: File) {
       height,
     }
   } catch {
-    // Formats the browser can't decode here (e.g. some RAW/HEIC files) fall back to the original
+    // Unsupported image formats fall back to the original file.
     return {
       src: fullSrc,
       thumbSrc: fullSrc,
@@ -54,18 +76,23 @@ async function makeThumbnail(file: File) {
   }
 }
 
-// Sample photos bundled with the prototype. Each <name>.jpg has a pre-made <name>_thumb.jpg beside it
-// (480px long side) so the grids stay fast.
-const sampleUrls = import.meta.glob<string>('../assets/images/*/*.jpg', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-})
+// ========================================
+// SAMPLE PHOTOS
+// ========================================
+
+// Each sample photo has a pre-generated thumbnail.
+const sampleUrls = import.meta.glob<string>(
+  '../assets/images/*/*.jpg',
+  {
+    eager: true,
+    query: '?url',
+    import: 'default',
+  }
+)
 
 const LANDSCAPE = 3 / 2
 const PORTRAIT = 2 / 3
 
-// [folder/file name, width / height]
 type SamplePhoto = [string, number]
 
 const COLLECTION_1: SamplePhoto[] = [
@@ -101,10 +128,16 @@ const COLLECTION_3: SamplePhoto[] = [
   ['collection3/20241119_0331', LANDSCAPE],
 ]
 
-// Every 4th photo is for sale; borrowed photos pass sell = false so a photo isn't listed twice
-function makeSamples(collectionId: string, photos: SamplePhoto[], sell = true): LibraryImage[] {
+// Every fourth photo is available for sale.
+// Borrowed photos use sell = false to avoid duplicate listings.
+function makeSamples(
+  collectionId: string,
+  photos: SamplePhoto[],
+  sell = true
+): LibraryImage[] {
   return photos.map(([path, aspectRatio], i) => {
     const forSale = sell && i % 4 === 0
+
     return {
       id: `${collectionId}-img-${i + 1}`,
       title: path.split('/')[1],
@@ -118,7 +151,10 @@ function makeSamples(collectionId: string, photos: SamplePhoto[], sell = true): 
   })
 }
 
-// IDs and names match the "All Collections" page (src/pages/Collections.tsx) so its cards open these
+// ========================================
+// INITIAL COLLECTIONS
+// ========================================
+
 const initialCollections: Collection[] = [
   {
     id: '1',
@@ -146,85 +182,226 @@ const initialCollections: Collection[] = [
     name: 'Collection 4',
     info: '',
     isPrivate: false,
-    images: [], // empty collection: shows the "add images" state
+    images: [],
   },
   {
     id: '5',
     name: 'Collection 5',
     info: '',
     isPrivate: true,
-    // No folder for this one, so it borrows a few photos to keep the private collection walkable
-    images: makeSamples('5', [COLLECTION_1[2], COLLECTION_2[0], COLLECTION_3[3], COLLECTION_1[7], COLLECTION_2[4]], false),
+    images: makeSamples(
+      '5',
+      [
+        COLLECTION_1[2],
+        COLLECTION_2[0],
+        COLLECTION_3[3],
+        COLLECTION_1[7],
+        COLLECTION_2[4],
+      ],
+      false
+    ),
   },
 ]
 
+// ========================================
+// LIBRARY CONTEXT
+// ========================================
+
 type LibraryContextValue = {
   collections: Collection[]
+
   getCollection: (id: string) => Collection | undefined
-  addCollection: (name: string, isPrivate: boolean) => void
-  addImages: (collectionId: string, files: File[]) => Promise<void>
-  updateCollection: (collectionId: string, changes: Partial<Omit<Collection, 'id'>>) => void
+
+  addCollection: (
+    name: string,
+    isPrivate: boolean
+  ) => Collection
+
+  addImages: (
+    collectionId: string,
+    files: File[]
+  ) => Promise<void>
+
+  updateCollection: (
+    collectionId: string,
+    changes: Partial<Omit<Collection, 'id'>>
+  ) => void
+
   deleteCollection: (collectionId: string) => void
-  updateImage: (collectionId: string, imageId: string, changes: Partial<Omit<LibraryImage, 'id'>>) => void
+
+  updateImage: (
+    collectionId: string,
+    imageId: string,
+    changes: Partial<Omit<LibraryImage, 'id'>>
+  ) => void
 }
 
 const LibraryContext = createContext<LibraryContextValue | null>(null)
 
-export function LibraryProvider({ children }: { children: ReactNode }) {
-  const [collections, setCollections] = useState<Collection[]>(initialCollections)
+// ========================================
+// LIBRARY PROVIDER
+// ========================================
 
-  const getCollection = (id: string) => collections.find((c) => c.id === id)
+export function LibraryProvider({
+  children,
+}: {
+  children: ReactNode
+}) {
+  const [collections, setCollections] =
+    useState<Collection[]>(initialCollections)
 
-  const addCollection = (name: string, isPrivate: boolean) => {
-    const newCollection: Collection = {
-      id: Date.now().toString(),
-      name,
-      info: '',
-      isPrivate,
-      images: [],
-    }
-  
-    setCollections((prev) => [...prev, newCollection])
-  }
+  // ========================================
+  // GET COLLECTION
+  // ========================================
 
-  // Thumbnails are generated in the background; the images appear once they're ready
-  const addImages = async (collectionId: string, files: File[]) => {
-    const stamp = Date.now()
-    const thumbnails = await Promise.all(files.map(makeThumbnail))
-    const newImages: LibraryImage[] = files.map((file, i) => ({
-      id: `${collectionId}-${stamp}-${i}`,
-      title: file.name.replace(/\.[^.]+$/, ''),
-      description: '',
-      ...thumbnails[i],
-      format: file.type.split('/')[1]?.toUpperCase() || file.name.split('.').pop()?.toUpperCase() || 'Unknown',
-      width: thumbnails[i].width,
-      height: thumbnails[i].height,
-      fileSize: file.size,
-      forSale: false,
-      price: null,
-    }))
-    setCollections((prev) =>
-      prev.map((c) => (c.id === collectionId ? { ...c, images: [...c.images, ...newImages] } : c)),
-    )
-  }
+  const getCollection = useCallback(
+    (id: string) => {
+      return collections.find((c) => c.id === id)
+    },
+    [collections]
+  )
 
-  const updateCollection = (collectionId: string, changes: Partial<Omit<Collection, 'id'>>) => {
-    setCollections((prev) => prev.map((c) => (c.id === collectionId ? { ...c, ...changes } : c)))
-  }
+  // ========================================
+  // ADD COLLECTION
+  // ========================================
 
-  const deleteCollection = (collectionId: string) => {
-    setCollections((prev) => prev.filter((c) => c.id !== collectionId))
-  }
+  const addCollection = useCallback(
+    (name: string, isPrivate: boolean): Collection => {
+      const newCollection: Collection = {
+        id: crypto.randomUUID(),
+        name,
+        info: '',
+        isPrivate,
+        images: [],
+      }
 
-  const updateImage = (collectionId: string, imageId: string, changes: Partial<Omit<LibraryImage, 'id'>>) => {
-    setCollections((prev) =>
-      prev.map((c) =>
-        c.id !== collectionId
-          ? c
-          : { ...c, images: c.images.map((img) => (img.id === imageId ? { ...img, ...changes } : img)) },
-      ),
-    )
-  }
+      setCollections((prev) => [
+        ...prev,
+        newCollection,
+      ])
+
+      // Return the new collection so the page can
+      // navigate directly to its upload screen.
+      return newCollection
+    },
+    []
+  )
+
+  // ========================================
+  // ADD IMAGES
+  // ========================================
+
+  const addImages = useCallback(
+    async (collectionId: string, files: File[]) => {
+      const stamp = Date.now()
+
+      const thumbnails = await Promise.all(
+        files.map(makeThumbnail)
+      )
+
+      const newImages: LibraryImage[] = files.map(
+        (file, i) => ({
+          id: `${collectionId}-${stamp}-${i}`,
+          title: file.name.replace(/\.[^.]+$/, ''),
+          description: '',
+
+          ...thumbnails[i],
+
+          format:
+            file.type.split('/')[1]?.toUpperCase() ||
+            file.name.split('.').pop()?.toUpperCase() ||
+            'Unknown',
+
+          width: thumbnails[i].width,
+          height: thumbnails[i].height,
+          fileSize: file.size,
+
+          forSale: false,
+          price: null,
+        })
+      )
+
+      setCollections((prev) =>
+        prev.map((c) =>
+          c.id === collectionId
+            ? {
+                ...c,
+                images: [
+                  ...c.images,
+                  ...newImages,
+                ],
+              }
+            : c
+        )
+      )
+    },
+    []
+  )
+
+  // ========================================
+  // UPDATE COLLECTION
+  // ========================================
+
+  const updateCollection = useCallback(
+    (
+      collectionId: string,
+      changes: Partial<Omit<Collection, 'id'>>
+    ) => {
+      setCollections((prev) =>
+        prev.map((c) =>
+          c.id === collectionId
+            ? { ...c, ...changes }
+            : c
+        )
+      )
+    },
+    []
+  )
+
+  // ========================================
+  // DELETE COLLECTION
+  // ========================================
+
+  const deleteCollection = useCallback(
+    (collectionId: string) => {
+      setCollections((prev) =>
+        prev.filter((c) => c.id !== collectionId)
+      )
+    },
+    []
+  )
+
+  // ========================================
+  // UPDATE IMAGE
+  // ========================================
+
+  const updateImage = useCallback(
+    (
+      collectionId: string,
+      imageId: string,
+      changes: Partial<Omit<LibraryImage, 'id'>>
+    ) => {
+      setCollections((prev) =>
+        prev.map((c) =>
+          c.id !== collectionId
+            ? c
+            : {
+                ...c,
+                images: c.images.map((img) =>
+                  img.id === imageId
+                    ? { ...img, ...changes }
+                    : img
+                ),
+              }
+        )
+      )
+    },
+    []
+  )
+
+  // ========================================
+  // PROVIDER
+  // ========================================
 
   return (
     <LibraryContext.Provider
@@ -236,15 +413,25 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
         updateCollection,
         deleteCollection,
         updateImage,
-      }}    
+      }}
     >
       {children}
     </LibraryContext.Provider>
   )
 }
 
+// ========================================
+// USE LIBRARY HOOK
+// ========================================
+
 export function useLibrary() {
   const ctx = useContext(LibraryContext)
-  if (!ctx) throw new Error('useLibrary must be used inside <LibraryProvider>')
+
+  if (!ctx) {
+    throw new Error(
+      'useLibrary must be used inside <LibraryProvider>'
+    )
+  }
+
   return ctx
 }
